@@ -29,6 +29,11 @@ export const admin = (() => {
         document.getElementById('replyComment').checked = Boolean(res.data.can_reply);
         document.getElementById('editComment').checked = Boolean(res.data.can_edit);
         document.getElementById('deleteComment').checked = Boolean(res.data.can_delete);
+        document.getElementById('showHome').checked = Boolean(res.data.show_home);
+        document.getElementById('showBride').checked = Boolean(res.data.show_bride);
+        document.getElementById('showWeddingDate').checked = Boolean(res.data.show_wedding_date);
+        document.getElementById('showGallery').checked = Boolean(res.data.show_gallery);
+        document.getElementById('showComment').checked = Boolean(res.data.show_comment);
         document.getElementById('dashboard-tenorkey').value = res.data.tenor_key;
 
         storage('config').set('tenor_key', res.data.tenor_key);

@@ -267,6 +267,27 @@ export const guest = (() => {
     };
 
     /**
+     * @param {string} id
+     * @param {boolean} show
+     * @returns {void}
+     */
+    const toggleInvitationSection = (id, show) => {
+        document.getElementById(id)?.classList.toggle('d-none', !show);
+        document.querySelector(`a.nav-link[href="#${id}"]`)?.closest('li')?.classList.toggle('d-none', !show);
+    };
+
+    /**
+     * @returns {void}
+     */
+    const applyInvitationVisibility = () => {
+        toggleInvitationSection('home', config.get('show_home') !== false);
+        toggleInvitationSection('bride', config.get('show_bride') !== false);
+        toggleInvitationSection('wedding-date', config.get('show_wedding_date') !== false);
+        toggleInvitationSection('gallery', config.get('show_gallery') !== false);
+        toggleInvitationSection('comment', config.get('show_comment') !== false);
+    };
+
+    /**
      * @returns {object}
      */
     const loaderLibs = () => {
@@ -341,7 +362,7 @@ export const guest = (() => {
 
         if (!token || token.length <= 0) {
             document.getElementById('comment')?.remove();
-            document.querySelector('a.nav-link[href="#comment"]')?.closest('li.nav-item')?.remove();
+            document.querySelector('a.nav-link[href="#comment"]')?.closest('li')?.remove();
 
             vid.load();
             img.load();
@@ -363,6 +384,7 @@ export const guest = (() => {
             session.guest(params.get('k') ?? token).then(({ data }) => {
                 document.dispatchEvent(new Event('undangan.session'));
                 progress.complete('config');
+                applyInvitationVisibility();
 
                 if (img.hasDataSrc()) {
                     img.load();
@@ -372,9 +394,13 @@ export const guest = (() => {
                 aud.load();
                 lib.load({ confetti: data.is_confetti_animation });
 
-                comment.show()
-                    .then(() => progress.complete('comment'))
-                    .catch(() => progress.invalid('comment'));
+                if (data.show_comment !== false) {
+                    comment.show()
+                        .then(() => progress.complete('comment'))
+                        .catch(() => progress.invalid('comment'));
+                } else {
+                    progress.complete('comment');
+                }
 
             }).catch(() => progress.invalid('config'));
         }
