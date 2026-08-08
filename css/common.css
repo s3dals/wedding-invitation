@@ -3,11 +3,53 @@ html {
     width: 100vw !important;
 }
 
+:root {
+    --theme-primary: #0d6efd;
+    --theme-secondary: #6c757d;
+    --theme-background: #ffffff;
+    --theme-font: 'Josefin Sans', sans-serif;
+}
+
 body {
-    font-family: 'Josefin Sans', sans-serif !important;
+    font-family: var(--theme-font) !important;
+    background-color: var(--theme-background) !important;
     padding: 0 !important;
     width: 100% !important;
     overflow-x: hidden !important;
+}
+
+.btn-primary {
+    --bs-btn-bg: var(--theme-primary);
+    --bs-btn-border-color: var(--theme-primary);
+    --bs-btn-hover-bg: color-mix(in srgb, var(--theme-primary) 85%, black);
+    --bs-btn-hover-border-color: color-mix(in srgb, var(--theme-primary) 80%, black);
+    --bs-btn-active-bg: color-mix(in srgb, var(--theme-primary) 80%, black);
+    --bs-btn-active-border-color: color-mix(in srgb, var(--theme-primary) 75%, black);
+    --bs-btn-disabled-bg: var(--theme-primary);
+    --bs-btn-disabled-border-color: var(--theme-primary);
+}
+
+.btn-secondary {
+    --bs-btn-bg: var(--theme-secondary);
+    --bs-btn-border-color: var(--theme-secondary);
+    --bs-btn-hover-bg: color-mix(in srgb, var(--theme-secondary) 85%, black);
+    --bs-btn-hover-border-color: color-mix(in srgb, var(--theme-secondary) 80%, black);
+    --bs-btn-active-bg: color-mix(in srgb, var(--theme-secondary) 80%, black);
+    --bs-btn-active-border-color: color-mix(in srgb, var(--theme-secondary) 75%, black);
+    --bs-btn-disabled-bg: var(--theme-secondary);
+    --bs-btn-disabled-border-color: var(--theme-secondary);
+}
+
+.text-secondary {
+    color: var(--theme-secondary) !important;
+}
+
+.bg-secondary {
+    background-color: var(--theme-secondary) !important;
+}
+
+.border-secondary {
+    border-color: var(--theme-secondary) !important;
 }
 
 i {

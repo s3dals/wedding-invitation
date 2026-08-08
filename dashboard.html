@@ -322,6 +322,39 @@
                             </div>
                         </div>
 
+                        <!-- Appearance -->
+                        <div class="p-3 bg-theme-auto mb-3 rounded-4 shadow">
+                            <p class="mx-0 mt-0 mb-1 p-0 fw-bold"><i class="fa-solid fa-palette me-2"></i>Appearance</p>
+
+                            <div class="row g-2 mb-2">
+                                <div class="col-4">
+                                    <label class="form-label small mb-1" for="themePrimaryColor">Primary</label>
+                                    <input type="color" class="form-control form-control-sm form-control-color w-100 rounded-4 shadow-sm" id="themePrimaryColor" data-offline-disabled="false">
+                                </div>
+                                <div class="col-4">
+                                    <label class="form-label small mb-1" for="themeSecondaryColor">Secondary</label>
+                                    <input type="color" class="form-control form-control-sm form-control-color w-100 rounded-4 shadow-sm" id="themeSecondaryColor" data-offline-disabled="false">
+                                </div>
+                                <div class="col-4">
+                                    <label class="form-label small mb-1" for="themeBackgroundColor">Background</label>
+                                    <input type="color" class="form-control form-control-sm form-control-color w-100 rounded-4 shadow-sm" id="themeBackgroundColor" data-offline-disabled="false">
+                                </div>
+                            </div>
+
+                            <label class="form-label small mb-1" for="themeFont">Font</label>
+                            <select class="form-select form-select-sm rounded-4 shadow-sm mb-3" id="themeFont" data-offline-disabled="false">
+                                <option value="default">Default (Josefin Sans)</option>
+                                <option value="elegant">Elegant (Playfair Display)</option>
+                                <option value="modern">Modern (Poppins)</option>
+                                <option value="classic">Classic (Merriweather)</option>
+                                <option value="script">Script (Great Vibes)</option>
+                            </select>
+
+                            <div class="d-flex justify-content-end">
+                                <button type="button" class="btn btn-sm btn-primary rounded-4 shadow-sm" onclick="undangan.admin.changeAppearance(this)" data-offline-disabled="false">Save</button>
+                            </div>
+                        </div>
+
                         <!-- Toggle -->
                         <div class="p-3 bg-theme-auto mb-3 rounded-4 shadow">
                             <p class="mx-0 mt-0 mb-1 p-0 fw-bold"><i class="fa-solid fa-sliders me-2"></i>Control</p>
