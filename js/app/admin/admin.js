@@ -35,6 +35,10 @@ export const admin = (() => {
         document.getElementById('showGallery').checked = Boolean(res.data.show_gallery);
         document.getElementById('showComment').checked = Boolean(res.data.show_comment);
         document.getElementById('dashboard-tenorkey').value = res.data.tenor_key;
+        document.getElementById('themePrimaryColor').value = res.data.theme_primary_color || '#0d6efd';
+        document.getElementById('themeSecondaryColor').value = res.data.theme_secondary_color || '#6c757d';
+        document.getElementById('themeBackgroundColor').value = res.data.theme_background_color || '#ffffff';
+        document.getElementById('themeFont').value = res.data.theme_font || 'default';
 
         storage('config').set('tenor_key', res.data.tenor_key);
         document.dispatchEvent(new Event('undangan.session'));
@@ -302,6 +306,37 @@ export const admin = (() => {
     };
 
     /**
+     * @param {HTMLButtonElement} button
+     * @returns {void}
+     */
+    const changeAppearance = (button) => {
+        const primary = document.getElementById('themePrimaryColor');
+        const secondary = document.getElementById('themeSecondaryColor');
+        const background = document.getElementById('themeBackgroundColor');
+        const font = document.getElementById('themeFont');
+
+        const btn = util.disableButton(button);
+
+        request(HTTP_PATCH, '/api/user')
+            .token(session.getToken())
+            .body({
+                theme_primary_color: primary.value,
+                theme_secondary_color: secondary.value,
+                theme_background_color: background.value,
+                theme_font: font.value,
+            })
+            .send(dto.statusResponse)
+            .then((res) => {
+                if (!res.data.status) {
+                    return;
+                }
+
+                util.notify('Success change appearance').success();
+            })
+            .finally(() => btn.restore(true));
+    };
+
+    /**
      * @returns {void}
      */
     const logout = () => {
@@ -367,6 +402,7 @@ export const admin = (() => {
                 changeName,
                 changePassword,
                 changeCheckboxValue,
+                changeAppearance,
                 enableButtonName,
                 enableButtonPassword,
                 openLists,
