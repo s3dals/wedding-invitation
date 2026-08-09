@@ -365,6 +365,43 @@
                             </div>
                         </div>
 
+                        <!-- Photos -->
+                        <div class="p-3 bg-theme-auto mb-3 rounded-4 shadow">
+                            <p class="mx-0 mt-0 mb-1 p-0 fw-bold"><i class="fa-solid fa-images me-2"></i>Photos</p>
+                            <p class="small mb-3" style="opacity:0.75;">JPEG, PNG, or WebP, up to 5MB each.</p>
+
+                            <div class="row g-2 mb-3">
+                                <div class="col-4 text-center">
+                                    <img id="photoHomePreview" src="./assets/images/placeholder.webp" alt="home" class="img-center-crop rounded-4 border shadow-sm mb-2" style="width:100%; aspect-ratio:1;">
+                                    <label class="form-label small mb-1 d-block" for="photoHomeInput">Home</label>
+                                    <input type="file" accept="image/jpeg,image/png,image/webp" class="form-control form-control-sm rounded-4 shadow-sm mb-1" id="photoHomeInput" data-offline-disabled="false">
+                                    <button type="button" class="btn btn-sm btn-primary rounded-4 shadow-sm w-100" onclick="undangan.admin.uploadPhoto(this, 'home')" data-offline-disabled="false">Upload</button>
+                                </div>
+                                <div class="col-4 text-center">
+                                    <img id="photoBridePreview" src="./assets/images/placeholder.webp" alt="bride" class="img-center-crop rounded-4 border shadow-sm mb-2" style="width:100%; aspect-ratio:1;">
+                                    <label class="form-label small mb-1 d-block" for="photoBrideInput">Bride</label>
+                                    <input type="file" accept="image/jpeg,image/png,image/webp" class="form-control form-control-sm rounded-4 shadow-sm mb-1" id="photoBrideInput" data-offline-disabled="false">
+                                    <button type="button" class="btn btn-sm btn-primary rounded-4 shadow-sm w-100" onclick="undangan.admin.uploadPhoto(this, 'bride')" data-offline-disabled="false">Upload</button>
+                                </div>
+                                <div class="col-4 text-center">
+                                    <img id="photoGroomPreview" src="./assets/images/placeholder.webp" alt="groom" class="img-center-crop rounded-4 border shadow-sm mb-2" style="width:100%; aspect-ratio:1;">
+                                    <label class="form-label small mb-1 d-block" for="photoGroomInput">Groom</label>
+                                    <input type="file" accept="image/jpeg,image/png,image/webp" class="form-control form-control-sm rounded-4 shadow-sm mb-1" id="photoGroomInput" data-offline-disabled="false">
+                                    <button type="button" class="btn btn-sm btn-primary rounded-4 shadow-sm w-100" onclick="undangan.admin.uploadPhoto(this, 'groom')" data-offline-disabled="false">Upload</button>
+                                </div>
+                            </div>
+
+                            <hr class="my-3">
+                            <p class="mx-0 mt-0 mb-2 p-0 fw-bold">Gallery</p>
+
+                            <div class="row g-2 mb-2" id="galleryList"></div>
+
+                            <div class="d-flex gap-2">
+                                <input type="file" accept="image/jpeg,image/png,image/webp" class="form-control form-control-sm rounded-4 shadow-sm" id="photoGalleryInput" data-offline-disabled="false">
+                                <button type="button" class="btn btn-sm btn-primary rounded-4 shadow-sm text-nowrap" onclick="undangan.admin.uploadGalleryPhoto(this)" data-offline-disabled="false">Add</button>
+                            </div>
+                        </div>
+
                         <!-- Toggle -->
                         <div class="p-3 bg-theme-auto mb-3 rounded-4 shadow">
                             <p class="mx-0 mt-0 mb-1 p-0 fw-bold"><i class="fa-solid fa-sliders me-2"></i>Control</p>
