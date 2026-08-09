@@ -56,18 +56,34 @@ export const rsvp = (() => {
     };
 
     /**
+     * Built from the parts rather than parsed as a string, because
+     * new Date('2030-06-01') is UTC midnight and renders as the previous day
+     * for anyone west of Greenwich.
+     *
+     * @param {string} value
+     * @returns {string}
+     */
+    const formatDeadline = (value) => {
+        const [year, month, day] = String(value).split('-').map(Number);
+        const date = new Date(year, month - 1, day);
+
+        if (Number.isNaN(date.getTime())) {
+            return value;
+        }
+
+        return date.toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' });
+    };
+
+    /**
+     * @param {string} message
+     * @param {string} icon
      * @returns {void}
      */
-    const renderResponded = () => {
-        const result = document.getElementById('rsvp-result');
-        const attending = data.status === 'attending';
-
-        const message = attending
-            ? `We are delighted you can join us${data.guest_count > 1 ? `, all ${data.guest_count} of you` : ''}.`
-            : 'Thank you for letting us know. You will be missed.';
-
-        util.safeInnerHTML(result, `<i class="fa-solid ${attending ? 'fa-circle-check' : 'fa-circle-info'} fa-lg mb-2"></i><p class="m-0">${util.escapeHtml(message)}</p>`);
-        result.classList.remove('d-none');
+    const renderMessage = (message, icon) => {
+        util.safeInnerHTML(
+            document.getElementById('rsvp-result-message'),
+            `<i class="fa-solid ${icon} fa-lg mb-2"></i><p class="m-0">${util.escapeHtml(message)}</p>`,
+        );
     };
 
     /**
@@ -76,15 +92,35 @@ export const rsvp = (() => {
     const applyState = () => {
         const form = document.getElementById('rsvp-form');
         const result = document.getElementById('rsvp-result');
+        const change = document.getElementById('rsvp-change');
+        const closed = data.can_respond === false;
 
-        if (data.status === 'pending') {
+        // Still open and nothing answered yet: straight to the form.
+        if (!closed && data.status === 'pending') {
             form.classList.remove('d-none');
             result.classList.add('d-none');
             return;
         }
 
         form.classList.add('d-none');
-        renderResponded();
+        result.classList.remove('d-none');
+
+        if (data.status === 'pending') {
+            renderMessage('The date to reply has passed, so this invitation can no longer be answered.', 'fa-circle-exclamation');
+            change.classList.add('d-none');
+            return;
+        }
+
+        const attending = data.status === 'attending';
+        renderMessage(
+            attending
+                ? `We are delighted you can join us${data.guest_count > 1 ? `, all ${data.guest_count} of you` : ''}.`
+                : 'Thank you for letting us know. You will be missed.',
+            attending ? 'fa-circle-check' : 'fa-circle-info',
+        );
+
+        // An answer can be revised right up until the deadline.
+        change.classList.toggle('d-none', closed);
     };
 
     /**
@@ -104,6 +140,26 @@ export const rsvp = (() => {
         wrapper.classList.toggle('d-none', !attending || data.max_guests <= 1);
 
         document.getElementById('rsvp-submit').disabled = false;
+    };
+
+    /**
+     * @returns {void}
+     */
+    const changeAnswer = () => {
+        if (data.can_respond === false) {
+            return;
+        }
+
+        document.getElementById('rsvp-result').classList.add('d-none');
+        document.getElementById('rsvp-form').classList.remove('d-none');
+
+        // Start from the answer they already gave.
+        choose(data.status === 'attending');
+
+        const count = document.getElementById('rsvp-count');
+        if (count && data.guest_count > 0) {
+            count.value = String(data.guest_count);
+        }
     };
 
     /**
@@ -163,6 +219,18 @@ export const rsvp = (() => {
                 : '';
         }
 
+        const note = document.getElementById('rsvp-deadline-note');
+        if (note) {
+            const has = Boolean(data.rsvp_deadline);
+            note.classList.toggle('d-none', !has);
+
+            if (has) {
+                note.textContent = data.can_respond === false
+                    ? `Replies closed on ${formatDeadline(data.rsvp_deadline)}.`
+                    : `Please reply by ${formatDeadline(data.rsvp_deadline)}. You can change your answer until then.`;
+            }
+        }
+
         const count = document.getElementById('rsvp-count');
         if (count) {
             count.replaceChildren();
@@ -213,6 +281,7 @@ export const rsvp = (() => {
         show,
         choose,
         submit,
+        changeAnswer,
         getName,
         isActive,
     };
