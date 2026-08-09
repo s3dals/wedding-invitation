@@ -39,6 +39,17 @@ export const content = (() => {
     };
 
     /**
+     * Deliberately emptied, as opposed to never filled in. A key that was saved
+     * blank means "show nothing here"; a key with no stored value at all leaves
+     * the template wording alone.
+     *
+     * @param {string} key
+     * @returns {boolean}
+     */
+    const isCleared = (key) => Object.prototype.hasOwnProperty.call(texts, key)
+        && String(texts[key] ?? '').trim().length === 0;
+
+    /**
      * Every text carrying a data-content marker, plus the copy buttons that
      * must keep showing the same value they display.
      *
@@ -46,9 +57,24 @@ export const content = (() => {
      */
     const applyTexts = () => {
         document.querySelectorAll('[data-content]').forEach((el) => {
-            const value = get(el.getAttribute('data-content'));
+            const key = el.getAttribute('data-content');
+
+            if (isCleared(key)) {
+                el.classList.add('d-none');
+                return;
+            }
+
+            const value = get(key);
             if (value !== null) {
                 el.textContent = value;
+            }
+        });
+
+        // Some text sits inside a box that would be left as an empty shell -
+        // an icon and a copy button, or colour swatches with no caption.
+        document.querySelectorAll('[data-content-box]').forEach((el) => {
+            if (isCleared(el.getAttribute('data-content-box'))) {
+                el.classList.add('d-none');
             }
         });
 
