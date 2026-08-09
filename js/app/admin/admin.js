@@ -188,9 +188,10 @@ export const admin = (() => {
      * declared in content-fields.js and marked in index.html.
      *
      * @param {Record<string, string>} values
+     * @param {Record<string, string>} defaults
      * @returns {void}
      */
-    const renderContentForm = (values) => {
+    const renderContentForm = (values, defaults) => {
         const root = document.getElementById('contentForm');
         root.replaceChildren();
 
@@ -226,6 +227,14 @@ export const admin = (() => {
                 }
 
                 input.value = values[field.key] ?? '';
+
+                // Show what the invitation currently says, so an empty box reads
+                // as "unchanged" rather than "nothing here".
+                const fallback = defaults[field.key];
+                if (fallback && field.type !== 'datetime') {
+                    input.placeholder = fallback.length > 120 ? `${fallback.slice(0, 120)}...` : fallback;
+                }
+
                 wrap.appendChild(input);
 
                 if (field.hint) {
@@ -244,10 +253,42 @@ export const admin = (() => {
     };
 
     /**
+     * The wording the invitation falls back to when a box is left empty, read
+     * from the page itself so the hints cannot drift from the template.
+     *
+     * @returns {Promise<Record<string, string>>}
+     */
+    const loadContentDefaults = () => {
+        const url = window.location.href.split('?')[0].split('#')[0].replace(/dashboard(\.html)?\/?$/, '');
+
+        return window.fetch(url)
+            .then((res) => res.text())
+            .then((html) => {
+                const doc = new DOMParser().parseFromString(html, 'text/html');
+                const defaults = {};
+
+                doc.querySelectorAll('[data-content]').forEach((el) => {
+                    const key = el.getAttribute('data-content');
+                    const text = el.textContent.trim().replace(/\s+/g, ' ');
+
+                    if (!defaults[key] && text.length > 0) {
+                        defaults[key] = text;
+                    }
+                });
+
+                return defaults;
+            })
+            .catch(() => ({}));
+    };
+
+    /**
      * @returns {void}
      */
     const loadContent = () => {
-        request(HTTP_GET, '/api/content').token(session.getToken()).send().then((res) => {
+        Promise.all([
+            request(HTTP_GET, '/api/content').token(session.getToken()).send(),
+            loadContentDefaults(),
+        ]).then(([res, defaults]) => {
             const values = { ...res.data };
 
             // datetime-local will not accept a space between date and time.
@@ -255,7 +296,7 @@ export const admin = (() => {
                 values.event_datetime = String(values.event_datetime).replace(' ', 'T').slice(0, 16);
             }
 
-            renderContentForm(values);
+            renderContentForm(values, defaults);
         });
     };
 
