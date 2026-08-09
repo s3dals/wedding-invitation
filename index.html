@@ -648,31 +648,38 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#home">
                             <i class="fa-solid fa-house"></i>
-                            <span class="d-block" style="font-size: 0.7rem;">Home</span>
+                            <span class="d-block" style="font-size: 0.7rem;" data-content="nav_home">Home</span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#bride">
                             <i class="fa-solid fa-user-group"></i>
-                            <span class="d-block" style="font-size: 0.7rem;">Couple</span>
+                            <span class="d-block" style="font-size: 0.7rem;" data-content="nav_couple">Couple</span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#wedding-date">
                             <i class="fa-solid fa-calendar-check"></i>
-                            <span class="d-block" style="font-size: 0.7rem;">Date</span>
+                            <span class="d-block" style="font-size: 0.7rem;" data-content="nav_date">Date</span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#gallery">
                             <i class="fa-solid fa-images"></i>
-                            <span class="d-block" style="font-size: 0.7rem;">Gallery</span>
+                            <span class="d-block" style="font-size: 0.7rem;" data-content="nav_gallery">Gallery</span>
+                        </a>
+                    </li>
+                    <!-- Hidden until rsvp.show() finds a personal invitation, like the section it jumps to. -->
+                    <li class="nav-item d-none" id="nav-rsvp">
+                        <a class="nav-link" href="#rsvp">
+                            <i class="fa-solid fa-envelope-circle-check"></i>
+                            <span class="d-block" style="font-size: 0.7rem;" data-content="nav_rsvp">RSVP</span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#comment">
                             <i class="fa-solid fa-comments"></i>
-                            <span class="d-block" style="font-size: 0.7rem;">Wishes</span>
+                            <span class="d-block" style="font-size: 0.7rem;" data-content="nav_wishes">Wishes</span>
                         </a>
                     </li>
                 </ul>
