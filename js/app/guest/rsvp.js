@@ -265,7 +265,9 @@ export const rsvp = (() => {
             for (let i = 1; i <= data.max_guests; i++) {
                 const option = document.createElement('option');
                 option.value = String(i);
-                option.textContent = i === 1 ? '1 person' : `${i} people`;
+                // Just the number: it needs no translation, and the label above
+                // the list already says what is being counted.
+                option.textContent = String(i);
                 count.appendChild(option);
             }
 
