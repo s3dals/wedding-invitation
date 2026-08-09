@@ -315,6 +315,7 @@ export const guest = (() => {
         toggleInvitationSection('gallery', config.get('show_gallery') !== false);
         toggleInvitationSection('story', config.get('show_story') !== false);
         toggleInvitationSection('gift', config.get('show_gift') !== false);
+        toggleInvitationSection('dresscode', config.get('show_dresscode') !== false);
         toggleInvitationSection('comment', config.get('show_comment') !== false);
     };
 

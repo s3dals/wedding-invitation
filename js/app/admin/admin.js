@@ -226,14 +226,13 @@ export const admin = (() => {
                     input.type = field.type === 'datetime' ? 'datetime-local' : 'text';
                 }
 
-                input.value = values[field.key] ?? '';
+                // Prefilled with whatever the invitation currently shows, so that
+                // clearing a box is a deliberate act meaning "show nothing here"
+                // rather than being indistinguishable from never touching it.
+                const stored = Object.prototype.hasOwnProperty.call(values, field.key);
+                const fallback = field.type === 'datetime' ? '' : (defaults[field.key] ?? '');
 
-                // Show what the invitation currently says, so an empty box reads
-                // as "unchanged" rather than "nothing here".
-                const fallback = defaults[field.key];
-                if (fallback && field.type !== 'datetime') {
-                    input.placeholder = fallback.length > 120 ? `${fallback.slice(0, 120)}...` : fallback;
-                }
+                input.value = stored ? (values[field.key] ?? '') : fallback;
 
                 wrap.appendChild(input);
 
@@ -351,6 +350,7 @@ export const admin = (() => {
         document.getElementById('showGallery').checked = Boolean(res.data.show_gallery);
         document.getElementById('showStory').checked = res.data.show_story !== false;
         document.getElementById('showGift').checked = res.data.show_gift !== false;
+        document.getElementById('showDresscode').checked = res.data.show_dresscode !== false;
         document.getElementById('showComment').checked = Boolean(res.data.show_comment);
         document.getElementById('dashboard-tenorkey').value = res.data.tenor_key;
         document.getElementById('enableCustomTheme').checked = Boolean(res.data.is_custom_theme);

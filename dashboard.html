@@ -366,7 +366,7 @@
                             <h5 class="fw-bold my-1 ms-0 p-0" style="color: var(--bs-gray-900); font-size: 1rem;"><i class="fa-solid fa-pen-to-square mx-2"></i>Texts</h5>
                         </div>
 
-                        <p class="small mb-3" style="opacity:0.75;">Everything written on the invitation. A greyed-out hint shows what the page says now &mdash; leave a box empty to keep it.</p>
+                        <p class="small mb-3" style="opacity:0.75;">Everything written on the invitation. Boxes start with what the page says now. Clear one to hide that text on the invitation.</p>
 
                         <div id="contentForm"></div>
 
@@ -538,6 +538,10 @@
                             <div class="form-check form-switch mb-1">
                                 <input class="form-check-input shadow-sm" style="cursor:pointer;" type="checkbox" role="switch" id="showGift" onchange="undangan.admin.changeCheckboxValue(this, 'show_gift')" data-offline-disabled="false">
                                 <label class="form-check-label" style="cursor:pointer;" for="showGift">Show love gift</label>
+                            </div>
+                            <div class="form-check form-switch mb-1">
+                                <input class="form-check-input shadow-sm" style="cursor:pointer;" type="checkbox" role="switch" id="showDresscode" onchange="undangan.admin.changeCheckboxValue(this, 'show_dresscode')" data-offline-disabled="false">
+                                <label class="form-check-label" style="cursor:pointer;" for="showDresscode">Show dress code</label>
                             </div>
                             <div class="form-check form-switch mb-1">
                                 <input class="form-check-input shadow-sm" style="cursor:pointer;" type="checkbox" role="switch" id="showComment" onchange="undangan.admin.changeCheckboxValue(this, 'show_comment')" data-offline-disabled="false">
