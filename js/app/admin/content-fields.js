@@ -62,6 +62,7 @@ export const contentFields = [
             { key: 'quran_1_ref', label: 'Verse 1 reference', type: 'text' },
             { key: 'quran_2_text', label: 'Verse 2', type: 'area' },
             { key: 'quran_2_ref', label: 'Verse 2 reference', type: 'text' },
+            { key: 'closing_arabic', label: 'Closing (Arabic)', type: 'text' },
             { key: 'closing_greeting', label: 'Closing greeting', type: 'text' },
         ],
     },
