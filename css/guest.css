@@ -113,3 +113,19 @@ svg {
 .no-gap-bottom {
     margin-bottom: -0.75rem !important;
 }
+
+/* Fixed custom theme: see common.css for the base rules this extends. */
+html.custom-theme-active .btn-transparent {
+    background-color: color-mix(in srgb, var(--theme-background) 50%, transparent) !important;
+    backdrop-filter: blur(0.5rem);
+}
+
+html.custom-theme-active .color-theme-svg {
+    color: var(--theme-text);
+    background-color: var(--theme-background);
+}
+
+html.custom-theme-active .bg-light-dark,
+html.custom-theme-active .bg-white-black {
+    background-color: var(--theme-background) !important;
+}

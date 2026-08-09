@@ -326,18 +326,28 @@
                         <div class="p-3 bg-theme-auto mb-3 rounded-4 shadow">
                             <p class="mx-0 mt-0 mb-1 p-0 fw-bold"><i class="fa-solid fa-palette me-2"></i>Appearance</p>
 
+                            <div class="form-check form-switch mb-2">
+                                <input class="form-check-input shadow-sm" style="cursor:pointer;" type="checkbox" role="switch" id="enableCustomTheme" onchange="undangan.admin.changeCheckboxValue(this, 'is_custom_theme')" data-offline-disabled="false">
+                                <label class="form-check-label" style="cursor:pointer;" for="enableCustomTheme">Enable custom theme</label>
+                            </div>
+                            <p class="small mb-2" style="opacity:0.75;">When enabled, these colors replace the automatic light/dark look for every visitor, and the theme-switch button is hidden.</p>
+
                             <div class="row g-2 mb-2">
-                                <div class="col-4">
+                                <div class="col-3">
                                     <label class="form-label small mb-1" for="themePrimaryColor">Primary</label>
                                     <input type="color" class="form-control form-control-sm form-control-color w-100 rounded-4 shadow-sm" id="themePrimaryColor" data-offline-disabled="false">
                                 </div>
-                                <div class="col-4">
+                                <div class="col-3">
                                     <label class="form-label small mb-1" for="themeSecondaryColor">Secondary</label>
                                     <input type="color" class="form-control form-control-sm form-control-color w-100 rounded-4 shadow-sm" id="themeSecondaryColor" data-offline-disabled="false">
                                 </div>
-                                <div class="col-4">
+                                <div class="col-3">
                                     <label class="form-label small mb-1" for="themeBackgroundColor">Background</label>
                                     <input type="color" class="form-control form-control-sm form-control-color w-100 rounded-4 shadow-sm" id="themeBackgroundColor" data-offline-disabled="false">
+                                </div>
+                                <div class="col-3">
+                                    <label class="form-label small mb-1" for="themeTextColor">Text</label>
+                                    <input type="color" class="form-control form-control-sm form-control-color w-100 rounded-4 shadow-sm" id="themeTextColor" data-offline-disabled="false">
                                 </div>
                             </div>
 

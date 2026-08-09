@@ -163,7 +163,7 @@ export const guest = (() => {
         document.body.scrollIntoView({ behavior: 'instant' });
         document.getElementById('root').classList.remove('opacity-0');
 
-        if (theme.isAutoMode()) {
+        if (theme.isAutoMode() && !customTheme.isActive()) {
             document.getElementById('button-theme').classList.remove('d-none');
         }
 

@@ -35,9 +35,11 @@ export const admin = (() => {
         document.getElementById('showGallery').checked = Boolean(res.data.show_gallery);
         document.getElementById('showComment').checked = Boolean(res.data.show_comment);
         document.getElementById('dashboard-tenorkey').value = res.data.tenor_key;
+        document.getElementById('enableCustomTheme').checked = Boolean(res.data.is_custom_theme);
         document.getElementById('themePrimaryColor').value = res.data.theme_primary_color || '#0d6efd';
         document.getElementById('themeSecondaryColor').value = res.data.theme_secondary_color || '#6c757d';
         document.getElementById('themeBackgroundColor').value = res.data.theme_background_color || '#ffffff';
+        document.getElementById('themeTextColor').value = res.data.theme_text_color || '#212529';
         document.getElementById('themeFont').value = res.data.theme_font || 'default';
 
         storage('config').set('tenor_key', res.data.tenor_key);
@@ -313,6 +315,7 @@ export const admin = (() => {
         const primary = document.getElementById('themePrimaryColor');
         const secondary = document.getElementById('themeSecondaryColor');
         const background = document.getElementById('themeBackgroundColor');
+        const text = document.getElementById('themeTextColor');
         const font = document.getElementById('themeFont');
 
         const btn = util.disableButton(button);
@@ -323,6 +326,7 @@ export const admin = (() => {
                 theme_primary_color: primary.value,
                 theme_secondary_color: secondary.value,
                 theme_background_color: background.value,
+                theme_text_color: text.value,
                 theme_font: font.value,
             })
             .send(dto.statusResponse)

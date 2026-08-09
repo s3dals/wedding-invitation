@@ -7,6 +7,7 @@ html {
     --theme-primary: #0d6efd;
     --theme-secondary: #6c757d;
     --theme-background: #ffffff;
+    --theme-text: #212529;
     --theme-font: 'Josefin Sans', sans-serif;
 }
 
@@ -159,4 +160,48 @@ html[data-bs-theme="light"] .bg-overlay-auto {
 
 .gif-image {
     max-height: 10rem;
+}
+
+/* Fixed custom theme: overrides the auto light/dark classes above so a
+   chosen color scheme stays consistent regardless of system preference. */
+html.custom-theme-active body {
+    color: var(--theme-text) !important;
+}
+
+html.custom-theme-active .navbar {
+    background-color: color-mix(in srgb, var(--theme-background) 75%, transparent) !important;
+    backdrop-filter: blur(0.5rem);
+}
+
+html.custom-theme-active .text-theme-auto {
+    color: var(--theme-text) !important;
+}
+
+html.custom-theme-active .nav-link {
+    color: color-mix(in srgb, var(--theme-text) 50%, transparent) !important;
+}
+
+html.custom-theme-active .bg-theme-auto {
+    background-color: var(--theme-background) !important;
+}
+
+html.custom-theme-active .btn-outline-auto {
+    --bs-btn-color: var(--theme-text);
+    --bs-btn-border-color: var(--theme-text);
+    --bs-btn-hover-color: var(--theme-background);
+    --bs-btn-hover-bg: var(--theme-text);
+    --bs-btn-hover-border-color: var(--theme-text);
+    --bs-btn-active-color: var(--theme-background);
+    --bs-btn-active-bg: var(--theme-text);
+    --bs-btn-active-border-color: var(--theme-text);
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: var(--theme-text);
+    --bs-btn-disabled-bg: transparent;
+    --bs-btn-disabled-border-color: var(--theme-text);
+    --bs-gradient: none;
+}
+
+html.custom-theme-active .bg-overlay-auto {
+    background-color: color-mix(in srgb, var(--theme-background) 50%, transparent) !important;
+    backdrop-filter: blur(0.25rem);
 }
