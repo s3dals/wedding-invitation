@@ -55,6 +55,18 @@ export const rsvp = (() => {
     const getName = () => data?.name ?? null;
 
     /**
+     * Per-guest wording above the name. Null when this guest has none, which
+     * leaves the invitation-wide welcome message in place.
+     *
+     * @returns {string|null}
+     */
+    const getGreeting = () => {
+        const value = String(data?.greeting ?? '').trim();
+
+        return value.length > 0 ? value : null;
+    };
+
+    /**
      * Keep the (hidden) attendance select in the wishes form in sync, so posting
      * a wish records the same answer the guest gave here.
      *
@@ -313,6 +325,7 @@ export const rsvp = (() => {
         submit,
         changeAnswer,
         getName,
+        getGreeting,
         isActive,
     };
 })();
