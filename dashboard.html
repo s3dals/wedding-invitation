@@ -58,6 +58,12 @@
                 </button>
             </li>
             <li class="nav-item">
+                <button class="nav-link" onclick="undangan.admin.navbar.buttonNavInvitation(this)">
+                    <i class="fa-solid fa-envelope-open-text"></i>
+                    <span class="d-block" style="font-size: 0.7rem;">Invitations</span>
+                </button>
+            </li>
+            <li class="nav-item">
                 <button class="nav-link" onclick="undangan.admin.navbar.buttonNavSetting(this)">
                     <i class="fa-solid fa-gear"></i>
                     <span class="d-block" style="font-size: 0.7rem;">Setting</span>
@@ -88,6 +94,11 @@
                     <li class="nav-item pe-2" role="presentation">
                         <button class="btn-theme-auto nav-link w-100 text-start fw-semibold mb-1 rounded-4 shadow-sm active" data-bs-toggle="pill" data-bs-target="#pills-home" id="button-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">
                             <i class="fa-solid fa-house ms-3 me-2"></i>Home
+                        </button>
+                    </li>
+                    <li class="nav-item pe-2" role="presentation">
+                        <button class="btn-theme-auto nav-link w-100 text-start fw-semibold my-1 rounded-4 shadow-sm" data-bs-toggle="pill" data-bs-target="#pills-invitation" id="button-invitation" type="button" role="tab" aria-controls="pills-invitation" aria-selected="false">
+                            <i class="fa-solid fa-envelope-open-text ms-3 me-2"></i>Invitations
                         </button>
                     </li>
                     <li class="nav-item pe-2" role="presentation">
@@ -251,6 +262,76 @@
                         </div>
                     </section>
 
+                    <!-- Invitations -->
+                    <section class="tab-pane fade" id="pills-invitation" role="tabpanel" tabindex="0">
+
+                        <!-- Sub Header -->
+                        <div class="rounded-4 p-2 mb-4 shadow" style="background-color: var(--bs-gray-200)">
+                            <h5 class="fw-bold my-1 ms-0 p-0" style="color: var(--bs-gray-900); font-size: 1rem;"><i class="fa-solid fa-envelope-open-text mx-2"></i>Invitations</h5>
+                        </div>
+
+                        <!-- Summary -->
+                        <div class="p-3 bg-theme-auto mb-3 rounded-4 shadow">
+                            <p class="mx-0 mt-0 mb-3 p-0 fw-bold"><i class="fa-solid fa-chart-simple me-2"></i>Responses</p>
+
+                            <div class="row g-2 text-center mb-3">
+                                <div class="col-3">
+                                    <div class="border rounded-4 py-2">
+                                        <p class="m-0 fw-bold" id="guest-count-total">0</p>
+                                        <p class="m-0 small" style="opacity:0.75;">Invited</p>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="border rounded-4 py-2">
+                                        <p class="m-0 fw-bold" id="guest-count-attending">0</p>
+                                        <p class="m-0 small" style="opacity:0.75;">Coming</p>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="border rounded-4 py-2">
+                                        <p class="m-0 fw-bold" id="guest-count-declined">0</p>
+                                        <p class="m-0 small" style="opacity:0.75;">Declined</p>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="border rounded-4 py-2">
+                                        <p class="m-0 fw-bold" id="guest-count-pending">0</p>
+                                        <p class="m-0 small" style="opacity:0.75;">No reply</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <p class="m-0 small" id="guest-headcount" style="opacity:0.75;"></p>
+                        </div>
+
+                        <!-- Add Guest -->
+                        <div class="p-3 bg-theme-auto mb-3 rounded-4 shadow">
+                            <p class="mx-0 mt-0 mb-1 p-0 fw-bold"><i class="fa-solid fa-user-plus me-2"></i>Add Guest</p>
+                            <p class="small mb-3" style="opacity:0.75;">Each guest gets a personal link showing their name, and answers there whether they will attend.</p>
+
+                            <div class="row g-2 mb-3">
+                                <div class="col-8">
+                                    <label class="form-label small mb-1" for="guestName">Guest or family name</label>
+                                    <input type="text" class="form-control form-control-sm rounded-4 shadow-sm" id="guestName" maxlength="100" placeholder="e.g. John &amp; Jane Doe" autocomplete="off" data-offline-disabled="false">
+                                </div>
+                                <div class="col-4">
+                                    <label class="form-label small mb-1" for="guestMax">Seats</label>
+                                    <input type="number" class="form-control form-control-sm rounded-4 shadow-sm" id="guestMax" min="1" max="20" value="1" autocomplete="off" data-offline-disabled="false">
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-end">
+                                <button type="button" class="btn btn-sm btn-primary rounded-4 shadow-sm" onclick="undangan.admin.addGuest(this)" data-offline-disabled="false">Add Guest</button>
+                            </div>
+                        </div>
+
+                        <!-- Guest List -->
+                        <div class="p-3 bg-theme-auto mb-3 rounded-4 shadow">
+                            <p class="mx-0 mt-0 mb-3 p-0 fw-bold"><i class="fa-solid fa-list me-2"></i>Guest List</p>
+                            <div id="guestList"></div>
+                        </div>
+                    </section>
+
                     <!-- Setting -->
                     <section class="tab-pane fade" id="pills-setting" role="tabpanel" tabindex="0">
 
@@ -320,60 +401,6 @@
                             <div class="d-flex justify-content-end">
                                 <button type="button" class="btn btn-sm btn-primary rounded-4 shadow-sm" onclick="undangan.admin.tenor(this)" data-offline-disabled="false">Save</button>
                             </div>
-                        </div>
-
-                        <!-- Guest List -->
-                        <div class="p-3 bg-theme-auto mb-3 rounded-4 shadow">
-                            <p class="mx-0 mt-0 mb-1 p-0 fw-bold"><i class="fa-solid fa-envelope-open-text me-2"></i>Guest List</p>
-                            <p class="small mb-3" style="opacity:0.75;">Each guest gets a personal link showing their name, and answers there whether they will attend.</p>
-
-                            <div class="row g-2 text-center mb-3">
-                                <div class="col-3">
-                                    <div class="border rounded-4 py-2">
-                                        <p class="m-0 fw-bold" id="guest-count-total">0</p>
-                                        <p class="m-0 small" style="opacity:0.75;">Invited</p>
-                                    </div>
-                                </div>
-                                <div class="col-3">
-                                    <div class="border rounded-4 py-2">
-                                        <p class="m-0 fw-bold" id="guest-count-attending">0</p>
-                                        <p class="m-0 small" style="opacity:0.75;">Coming</p>
-                                    </div>
-                                </div>
-                                <div class="col-3">
-                                    <div class="border rounded-4 py-2">
-                                        <p class="m-0 fw-bold" id="guest-count-declined">0</p>
-                                        <p class="m-0 small" style="opacity:0.75;">Declined</p>
-                                    </div>
-                                </div>
-                                <div class="col-3">
-                                    <div class="border rounded-4 py-2">
-                                        <p class="m-0 fw-bold" id="guest-count-pending">0</p>
-                                        <p class="m-0 small" style="opacity:0.75;">No reply</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <p class="m-0 small" id="guest-headcount" style="opacity:0.75;"></p>
-
-                            <hr class="my-3">
-
-                            <div class="row g-2 mb-3">
-                                <div class="col-8">
-                                    <label class="form-label small mb-1" for="guestName">Guest or family name</label>
-                                    <input type="text" class="form-control form-control-sm rounded-4 shadow-sm" id="guestName" maxlength="100" placeholder="e.g. John &amp; Jane Doe" autocomplete="off" data-offline-disabled="false">
-                                </div>
-                                <div class="col-4">
-                                    <label class="form-label small mb-1" for="guestMax">Seats</label>
-                                    <input type="number" class="form-control form-control-sm rounded-4 shadow-sm" id="guestMax" min="1" max="20" value="1" autocomplete="off" data-offline-disabled="false">
-                                </div>
-                            </div>
-
-                            <div class="d-flex justify-content-end mb-3">
-                                <button type="button" class="btn btn-sm btn-primary rounded-4 shadow-sm" onclick="undangan.admin.addGuest(this)" data-offline-disabled="false">Add Guest</button>
-                            </div>
-
-                            <div id="guestList"></div>
                         </div>
 
                         <!-- Appearance -->
