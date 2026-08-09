@@ -133,4 +133,16 @@ export const contentFields = [
             { key: 'calendar_details', label: 'Calendar description', type: 'area' },
         ],
     },
+    {
+        group: 'Bottom Menu',
+        icon: 'fa-bars',
+        fields: [
+            { key: 'nav_home', label: 'Home', type: 'text' },
+            { key: 'nav_couple', label: 'Couple', type: 'text' },
+            { key: 'nav_date', label: 'Date', type: 'text' },
+            { key: 'nav_gallery', label: 'Gallery', type: 'text' },
+            { key: 'nav_rsvp', label: 'RSVP', type: 'text', hint: 'Only shown to guests with a personal link.' },
+            { key: 'nav_wishes', label: 'Wishes', type: 'text' },
+        ],
+    },
 ];

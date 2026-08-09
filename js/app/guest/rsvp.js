@@ -243,6 +243,10 @@ export const rsvp = (() => {
         }
 
         document.getElementById('rsvp')?.classList.remove('d-none');
+        // The section sits well down the page, so it gets its own stop in the
+        // bottom bar - revealed here rather than in markup, because a visitor
+        // without a personal link has nothing to jump to.
+        document.getElementById('nav-rsvp')?.classList.remove('d-none');
         document.getElementById('form-presence-wrapper')?.classList.add('d-none');
 
         const greeting = document.getElementById('rsvp-greeting');
