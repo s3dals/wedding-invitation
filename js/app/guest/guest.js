@@ -8,6 +8,7 @@ import { loader } from '../../libs/loader.js';
 import { theme } from '../../common/theme.js';
 import { lang } from '../../common/language.js';
 import { customTheme } from '../../common/custom-theme.js';
+import { customPhotos } from '../../common/custom-photos.js';
 import { storage } from '../../common/storage.js';
 import { session } from '../../common/session.js';
 import { offline } from '../../common/offline.js';
@@ -387,6 +388,7 @@ export const guest = (() => {
                 progress.complete('config');
                 applyInvitationVisibility();
                 customTheme.apply(config);
+                customPhotos.apply(config);
 
                 if (img.hasDataSrc()) {
                     img.load();

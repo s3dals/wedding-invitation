@@ -8,9 +8,73 @@ import { storage } from '../../common/storage.js';
 import { session } from '../../common/session.js';
 import { offline } from '../../common/offline.js';
 import { comment } from '../components/comment.js';
-import { pool, request, HTTP_GET, HTTP_PATCH, HTTP_PUT } from '../../connection/request.js';
+import { pool, request, HTTP_GET, HTTP_PATCH, HTTP_PUT, HTTP_POST, HTTP_DELETE } from '../../connection/request.js';
 
 export const admin = (() => {
+
+    /**
+     * @param {number} id
+     * @param {HTMLElement} col
+     * @returns {void}
+     */
+    const deleteGalleryPhoto = (id, col) => {
+        if (!util.ask('Are you sure?')) {
+            return;
+        }
+
+        request(HTTP_DELETE, `/api/photo/gallery/${id}`)
+            .token(session.getToken())
+            .send(dto.statusResponse)
+            .then((res) => {
+                if (!res.data.status) {
+                    return;
+                }
+
+                col.remove();
+                util.notify('Success delete photo').success();
+            });
+    };
+
+    /**
+     * @param {{id: number, url: string}} item
+     * @returns {HTMLDivElement}
+     */
+    const renderGalleryItem = (item) => {
+        const col = document.createElement('div');
+        col.className = 'col-4 position-relative';
+
+        const img = document.createElement('img');
+        img.src = item.url;
+        img.alt = 'gallery';
+        img.className = 'rounded-4 border shadow-sm w-100';
+        img.style.aspectRatio = '1';
+        img.style.objectFit = 'cover';
+
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'btn btn-sm btn-secondary rounded-circle position-absolute top-0 end-0 m-1 shadow-sm';
+        btn.style.width = '1.75rem';
+        btn.style.height = '1.75rem';
+        btn.style.padding = '0';
+        btn.setAttribute('data-offline-disabled', 'false');
+        util.safeInnerHTML(btn, '<i class="fa-solid fa-xmark"></i>');
+        btn.onclick = () => deleteGalleryPhoto(item.id, col);
+
+        col.appendChild(img);
+        col.appendChild(btn);
+        return col;
+    };
+
+    /**
+     * @returns {void}
+     */
+    const loadGalleryList = () => {
+        request(HTTP_GET, '/api/v2/gallery').token(session.getToken()).send().then((res) => {
+            const list = document.getElementById('galleryList');
+            list.replaceChildren();
+            res.data.forEach((item) => list.appendChild(renderGalleryItem(item)));
+        });
+    };
 
     /**
      * @returns {Promise<void>}
@@ -41,6 +105,11 @@ export const admin = (() => {
         document.getElementById('themeBackgroundColor').value = res.data.theme_background_color || '#ffffff';
         document.getElementById('themeTextColor').value = res.data.theme_text_color || '#212529';
         document.getElementById('themeFont').value = res.data.theme_font || 'default';
+
+        document.getElementById('photoHomePreview').src = res.data.photo_home_url || './assets/images/placeholder.webp';
+        document.getElementById('photoBridePreview').src = res.data.photo_bride_url || './assets/images/placeholder.webp';
+        document.getElementById('photoGroomPreview').src = res.data.photo_groom_url || './assets/images/placeholder.webp';
+        loadGalleryList();
 
         storage('config').set('tenor_key', res.data.tenor_key);
         document.dispatchEvent(new Event('undangan.session'));
@@ -341,6 +410,72 @@ export const admin = (() => {
     };
 
     /**
+     * @param {HTMLButtonElement} button
+     * @param {'home'|'bride'|'groom'} type
+     * @returns {void}
+     */
+    const uploadPhoto = (button, type) => {
+        const input = document.getElementById(`photo${type.charAt(0).toUpperCase()}${type.slice(1)}Input`);
+        if (!input.files || input.files.length === 0) {
+            util.notify('Choose a photo first').warning();
+            return;
+        }
+
+        const form = new FormData();
+        form.append('type', type);
+        form.append('photo', input.files[0]);
+
+        const btn = util.disableButton(button);
+        input.disabled = true;
+
+        request(HTTP_POST, '/api/photo')
+            .token(session.getToken())
+            .file(form)
+            .send()
+            .then((res) => {
+                document.getElementById(`photo${type.charAt(0).toUpperCase()}${type.slice(1)}Preview`).src = res.data.url;
+                input.value = '';
+                util.notify('Success upload photo').success();
+            })
+            .finally(() => {
+                input.disabled = false;
+                btn.restore(true);
+            });
+    };
+
+    /**
+     * @param {HTMLButtonElement} button
+     * @returns {void}
+     */
+    const uploadGalleryPhoto = (button) => {
+        const input = document.getElementById('photoGalleryInput');
+        if (!input.files || input.files.length === 0) {
+            util.notify('Choose a photo first').warning();
+            return;
+        }
+
+        const form = new FormData();
+        form.append('photo', input.files[0]);
+
+        const btn = util.disableButton(button);
+        input.disabled = true;
+
+        request(HTTP_POST, '/api/photo/gallery')
+            .token(session.getToken())
+            .file(form)
+            .send()
+            .then((res) => {
+                document.getElementById('galleryList').appendChild(renderGalleryItem(res.data));
+                input.value = '';
+                util.notify('Success add photo').success();
+            })
+            .finally(() => {
+                input.disabled = false;
+                btn.restore(true);
+            });
+    };
+
+    /**
      * @returns {void}
      */
     const logout = () => {
@@ -407,6 +542,8 @@ export const admin = (() => {
                 changePassword,
                 changeCheckboxValue,
                 changeAppearance,
+                uploadPhoto,
+                uploadGalleryPhoto,
                 enableButtonName,
                 enableButtonPassword,
                 openLists,

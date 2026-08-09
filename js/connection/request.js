@@ -470,5 +470,18 @@ export const request = (method, path) => {
             req.body = JSON.stringify(body);
             return this;
         },
+        /**
+         * @param {FormData} formData
+         * @returns {ReturnType<typeof request>}
+         */
+        file(formData) {
+            if (req.method === HTTP_GET) {
+                throw new Error('GET method does not support body');
+            }
+
+            req.headers.delete('Content-Type');
+            req.body = formData;
+            return this;
+        },
     };
 };

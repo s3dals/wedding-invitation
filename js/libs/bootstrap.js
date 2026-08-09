@@ -16,8 +16,17 @@ export const bs = (() => {
         return window.bootstrap.Tab.getOrCreateInstance(document.getElementById(id));
     };
 
+    /**
+     * @param {string} id
+     * @returns {ReturnType<typeof bootstrap.Carousel>}
+     */
+    const carousel = (id) => {
+        return window.bootstrap.Carousel.getOrCreateInstance(document.getElementById(id));
+    };
+
     return {
         tab,
         modal,
+        carousel,
     };
 })();
