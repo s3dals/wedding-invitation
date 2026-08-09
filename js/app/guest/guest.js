@@ -2,6 +2,7 @@ import { video } from './video.js';
 import { image } from './image.js';
 import { audio } from './audio.js';
 import { rsvp } from './rsvp.js';
+import { content } from '../../common/content.js';
 import { progress } from './progress.js';
 import { util } from '../../common/util.js';
 import { bs } from '../../libs/bootstrap.js';
@@ -254,21 +255,41 @@ export const guest = (() => {
      * @returns {void}
      */
     const buildGoogleCalendar = () => {
+        const event = content.calendar();
+
+        // Without a stored date there is nothing meaningful to add to a calendar,
+        // so leave the button inert rather than linking to a wrong year.
+        if (!event.start) {
+            return;
+        }
+
         /**
-         * @param {string} d 
+         * @param {Date} d
          * @returns {string}
          */
-        const formatDate = (d) => (new Date(d.replace(' ', 'T') + ':00Z')).toISOString().replace(/[-:]/g, '').split('.').shift();
+        const stamp = (d) => {
+            const pad = (n) => String(n).padStart(2, '0');
+            return `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}T${pad(d.getHours())}${pad(d.getMinutes())}00`;
+        };
+
+        // One hour long, and left floating so Google reads it in ctz below.
+        const end = new Date(event.start.getTime() + (60 * 60 * 1000));
 
         const url = new URL('https://calendar.google.com/calendar/render');
         const data = new URLSearchParams({
             action: 'TEMPLATE',
-            text: 'The Wedding of Wahyu and Riski',
-            dates: `${formatDate('2023-03-15 10:00')}/${formatDate('2023-03-15 11:00')}`,
-            details: 'With great respect, we invite you to attend our wedding ceremony. Thank you for your attention and prayers, which are a great joy and honor for us.',
-            location: 'RT 10 RW 02, Desa Pajerukan, Kec. Kalibagor, Kab. Banyumas, Jawa Tengah 53191.',
+            text: event.title ?? 'Wedding',
+            dates: `${stamp(event.start)}/${stamp(end)}`,
             ctz: config.get('tz'),
         });
+
+        if (event.details) {
+            data.set('details', event.details);
+        }
+
+        if (event.location) {
+            data.set('location', event.location);
+        }
 
         url.search = data.toString();
         document.querySelector('#home button')?.addEventListener('click', () => window.open(url, '_blank'));
@@ -320,6 +341,10 @@ export const guest = (() => {
      * @returns {Promise<void>}
      */
     const booting = async () => {
+        // Before countDownDate() and buildGoogleCalendar(), which both read
+        // values that the stored content may have just replaced.
+        content.apply();
+
         animateSvg();
         countDownDate();
         showGuestName();
@@ -382,8 +407,10 @@ export const guest = (() => {
         }
 
         if (token && token.length > 0) {
-            // add 3 progress for config, comment and the personal invitation.
+            // add 4 progress for config, comment, the personal invitation
+            // and the editable texts.
             // before img.load();
+            progress.add();
             progress.add();
             progress.add();
             progress.add();
@@ -404,6 +431,10 @@ export const guest = (() => {
                 rsvp.load(params.get('g'))
                     .then(() => progress.complete('guest'))
                     .catch(() => progress.complete('guest'));
+
+                content.load()
+                    .then(() => progress.complete('content'))
+                    .catch(() => progress.complete('content'));
 
                 if (img.hasDataSrc()) {
                     img.load();
