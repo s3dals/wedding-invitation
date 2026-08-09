@@ -554,7 +554,7 @@
                                 </div>
 
                                 <div class="mb-3 d-none" id="rsvp-count-wrapper">
-                                    <label for="rsvp-count" class="form-label my-1"><i class="fa-solid fa-user-group me-2"></i>How many will attend?</label>
+                                    <label for="rsvp-count" class="form-label my-1"><i class="fa-solid fa-user-group me-2"></i><span data-content="rsvp_count_label">How many will attend?</span></label>
                                     <select class="form-select shadow-sm rounded-4" id="rsvp-count" autocomplete="off" data-offline-disabled="false"></select>
                                 </div>
 
@@ -563,7 +563,7 @@
 
                             <div class="text-center d-none" id="rsvp-result">
                                 <div id="rsvp-result-message"></div>
-                                <button type="button" class="btn btn-outline-auto btn-sm rounded-4 shadow-sm mt-3 d-none" id="rsvp-change" onclick="undangan.guest.rsvpChange()" data-offline-disabled="false"><i class="fa-solid fa-pen me-2"></i>Change my answer</button>
+                                <button type="button" class="btn btn-outline-auto btn-sm rounded-4 shadow-sm mt-3 d-none" id="rsvp-change" onclick="undangan.guest.rsvpChange()" data-offline-disabled="false"><i class="fa-solid fa-pen me-2"></i><span data-content="rsvp_change_button">Change my answer</span></button>
                             </div>
                         </div>
                     </div>
@@ -638,18 +638,6 @@
                         <h2 class="font-esthetic" style="font-size: 2rem;" data-content="closing_greeting">Wassalamualaikum Warahmatullahi Wabarakatuh</h2>
                         <h2 class="font-arabic pt-4" style="font-size: 2rem;">اَلْحَمْدُ لِلّٰهِ رَبِّ الْعٰلَمِيْنَۙ</h2>
 
-                        <hr class="my-3">
-
-                        <div class="row align-items-center justify-content-between flex-column pb-3">
-                            <div class="col-auto">
-                                <small>Build with<i class="fa-solid fa-heart mx-1"></i>Dewanakl</small>
-                            </div>
-                            <div class="col-auto">
-                                <small><i class="fa-brands fa-github me-1"></i><a target="_blank" href="https://github.com/dewanakl/undangan">github</a></small>
-                                <small><i class="fa-solid fa-chart-simple me-1"></i><a target="_blank" href="https://status.ulems.my.id">status</a></small>
-                                <small><i class="fa-solid fa-music me-1"></i><a target="_blank" href="https://pixabay.com/music/modern-classical-pure-love-304010">music</a></small>
-                            </div>
-                        </div>
                     </div>
                 </section>
             </main>
@@ -733,12 +721,6 @@
                 <noscript>
                     <small class="mt-1 text-danger">Sorry, this invitation requires javascript to work</small>
                 </noscript>
-            </div>
-        </div>
-        <div class="text-center position-fixed w-100" style="bottom: 8%; left: 0;">
-            <div class="d-flex flex-column">
-                <small class="text-secondary">from</small>
-                <small class="text-theme-auto"><i class="fa-brands fa-github me-1"></i>dewanakl</small>
             </div>
         </div>
     </div>

@@ -1,4 +1,5 @@
 import { util } from '../../common/util.js';
+import { content } from '../../common/content.js';
 import { session } from '../../common/session.js';
 import { storage } from '../../common/storage.js';
 import { request, HTTP_GET, HTTP_POST } from '../../connection/request.js';
@@ -21,6 +22,27 @@ export const rsvp = (() => {
      * @type {boolean|null}
      */
     let choice = null;
+
+
+    /**
+     * These sentences have values written into them, so they are stored with
+     * {tokens} rather than as finished text. An emptied one falls back to the
+     * wording below instead of disappearing - a blank confirmation box would
+     * leave the guest with no idea whether their answer registered.
+     *
+     * @param {string} key
+     * @param {string} fallback
+     * @param {Record<string, string|number>} [vars={}]
+     * @returns {string}
+     */
+    const phrase = (key, fallback, vars = {}) => {
+        const template = content.get(key) ?? fallback;
+
+        return Object.keys(vars).reduce(
+            (acc, name) => acc.split(`{${name}}`).join(String(vars[name])),
+            template,
+        );
+    };
 
     /**
      * @returns {boolean}
@@ -106,18 +128,21 @@ export const rsvp = (() => {
         result.classList.remove('d-none');
 
         if (data.status === 'pending') {
-            renderMessage('The date to reply has passed, so this invitation can no longer be answered.', 'fa-circle-exclamation');
+            renderMessage(phrase('rsvp_closed_message', 'The date to reply has passed, so this invitation can no longer be answered.'), 'fa-circle-exclamation');
             change.classList.add('d-none');
             return;
         }
 
         const attending = data.status === 'attending';
-        renderMessage(
-            attending
-                ? `We are delighted you can join us${data.guest_count > 1 ? `, all ${data.guest_count} of you` : ''}.`
-                : 'Thank you for letting us know. You will be missed.',
-            attending ? 'fa-circle-check' : 'fa-circle-info',
-        );
+        let message = phrase('rsvp_declined', 'Thank you for letting us know. You will be missed.');
+
+        if (attending) {
+            message = data.guest_count > 1
+                ? phrase('rsvp_accepted_many', 'We are delighted you can join us, all {count} of you.', { count: data.guest_count })
+                : phrase('rsvp_accepted', 'We are delighted you can join us.');
+        }
+
+        renderMessage(message, attending ? 'fa-circle-check' : 'fa-circle-info');
 
         // An answer can be revised right up until the deadline.
         change.classList.toggle('d-none', closed);
@@ -215,7 +240,7 @@ export const rsvp = (() => {
         const seats = document.getElementById('rsvp-seats');
         if (seats) {
             seats.textContent = data.max_guests > 1
-                ? `This invitation is for up to ${data.max_guests} people.`
+                ? phrase('rsvp_seats_note', 'This invitation is for up to {count} people.', { count: data.max_guests })
                 : '';
         }
 
@@ -225,9 +250,11 @@ export const rsvp = (() => {
             note.classList.toggle('d-none', !has);
 
             if (has) {
+                const when = formatDeadline(data.rsvp_deadline);
+
                 note.textContent = data.can_respond === false
-                    ? `Replies closed on ${formatDeadline(data.rsvp_deadline)}.`
-                    : `Please reply by ${formatDeadline(data.rsvp_deadline)}. You can change your answer until then.`;
+                    ? phrase('rsvp_closed_note', 'Replies closed on {date}.', { date: when })
+                    : phrase('rsvp_deadline_note', 'Please reply by {date}. You can change your answer until then.', { date: when });
             }
         }
 
