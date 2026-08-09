@@ -135,7 +135,9 @@ export const rsvp = (() => {
                 applyState();
                 util.notify('Thank you for your response').success();
             })
-            .finally(() => btn.restore(true));
+            // On success the form is replaced by the confirmation anyway; on
+            // failure the guest must be able to try again.
+            .finally(() => btn.restore());
     };
 
     /**

@@ -176,7 +176,10 @@ export const admin = (() => {
                 loadGuestList();
                 util.notify('Success add guest').success();
             })
-            .finally(() => btn.restore(true));
+            // restore() and not restore(true): unlike the name/timezone/password
+            // buttons there is no input handler to re-enable this one, so keeping
+            // it disabled would allow only a single guest per page load.
+            .finally(() => btn.restore());
     };
 
     /**
@@ -506,7 +509,9 @@ export const admin = (() => {
 
                 util.notify('Success change appearance').success();
             })
-            .finally(() => btn.restore(true));
+            // See addGuest: this button has no re-enable handler either, so it
+            // must not be left disabled after a save.
+            .finally(() => btn.restore());
     };
 
     /**
