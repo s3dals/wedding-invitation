@@ -194,7 +194,7 @@ export const rsvp = (() => {
      */
     const submit = (button) => {
         if (choice === null) {
-            util.notify('Please choose whether you can attend.').warning();
+            util.notify(phrase('rsvp_choose_warning', 'Please choose whether you can attend.')).warning();
             return;
         }
 
@@ -215,7 +215,7 @@ export const rsvp = (() => {
                 data = res.data;
                 syncPresenceField();
                 applyState();
-                util.notify('Thank you for your response').success();
+                util.notify(phrase('rsvp_thanks', 'Thank you for your response')).success();
             })
             // On success the form is replaced by the confirmation anyway; on
             // failure the guest must be able to try again.
