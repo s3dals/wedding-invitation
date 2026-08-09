@@ -78,6 +78,25 @@ export const content = (() => {
             }
         });
 
+        // Attributes rather than text: the welcome greeting is read from
+        // data-message, and the venue button needs its href.
+        document.querySelectorAll('[data-content-attr]').forEach((el) => {
+            const [attribute, key] = String(el.getAttribute('data-content-attr')).split(':');
+            const value = get(key);
+
+            if (!attribute || !key || value === null) {
+                return;
+            }
+
+            // A stored value ends up in an href, so only ordinary links are
+            // allowed through - javascript: and data: URLs are not.
+            if (attribute === 'href' && !/^(https?:\/\/|mailto:|tel:|\/|#)/i.test(value)) {
+                return;
+            }
+
+            el.setAttribute(attribute, value);
+        });
+
         document.querySelectorAll('[data-content-copy]').forEach((el) => {
             const value = get(el.getAttribute('data-content-copy'));
             if (value !== null) {

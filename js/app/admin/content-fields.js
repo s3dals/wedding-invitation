@@ -88,6 +88,27 @@ export const contentFields = [
         ],
     },
     {
+        group: 'Welcome & Buttons',
+        icon: 'fa-envelope-open',
+        fields: [
+            { key: 'welcome_message', label: 'Greeting above the guest name', type: 'text', hint: 'Shown on the welcome screen, e.g. "To the Honorable Mr./Mrs."' },
+            { key: 'open_button', label: 'Open invitation button', type: 'text' },
+            { key: 'maps_label', label: 'Maps button label', type: 'text' },
+            { key: 'maps_url', label: 'Google Maps link', type: 'text', hint: 'Full https:// link to the venue.' },
+            { key: 'closing_thanks', label: 'Closing thank you', type: 'area' },
+        ],
+    },
+    {
+        group: 'RSVP',
+        icon: 'fa-envelope-circle-check',
+        fields: [
+            { key: 'rsvp_heading', label: 'RSVP heading', type: 'text' },
+            { key: 'rsvp_dear', label: 'Word before the guest name', type: 'text' },
+            { key: 'rsvp_accept', label: 'Accept button', type: 'text' },
+            { key: 'rsvp_decline', label: 'Decline button', type: 'text' },
+        ],
+    },
+    {
         group: 'Other Headings',
         icon: 'fa-heading',
         fields: [

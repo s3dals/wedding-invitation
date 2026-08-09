@@ -380,7 +380,7 @@
                         </div>
 
                         <div class="py-2" data-aos="fade-down" data-aos-duration="1500">
-                            <a href="https://goo.gl/maps/ALZR6FJZU3kxVwN86" target="_blank" class="btn btn-outline-auto btn-sm rounded-pill shadow mb-2 px-3"><i class="fa-solid fa-map-location-dot me-2"></i>View on Google Maps</a>
+                            <a href="https://goo.gl/maps/ALZR6FJZU3kxVwN86" target="_blank" class="btn btn-outline-auto btn-sm rounded-pill shadow mb-2 px-3" data-content-attr="href:maps_url"><i class="fa-solid fa-map-location-dot me-2"></i><span data-content="maps_label">View on Google Maps</span></a>
                             <small class="d-block my-1" data-content="venue_address">RT 10 RW 02, Desa Pajerukan, Kec. Kalibagor, Kab. Banyumas, Jawa Tengah 53191.</small>
                         </div>
                     </div>
@@ -536,9 +536,9 @@
                 <section class="bg-white-black pt-3 pb-4 d-none" id="rsvp">
                     <div class="container">
                         <div class="border rounded-5 shadow p-3" data-aos="fade-up" data-aos-duration="1500">
-                            <h2 class="font-esthetic text-center mt-2 mb-3" style="font-size: 2.25rem;">Will You Attend?</h2>
+                            <h2 class="font-esthetic text-center mt-2 mb-3" style="font-size: 2.25rem;" data-content="rsvp_heading">Will You Attend?</h2>
 
-                            <p class="text-center mb-1" style="font-size: 0.95rem;">Dear</p>
+                            <p class="text-center mb-1" style="font-size: 0.95rem;" data-content="rsvp_dear">Dear</p>
                             <p class="text-center fw-bold mb-1" id="rsvp-greeting" style="font-size: 1.05rem;"></p>
                             <p class="text-center mb-1" id="rsvp-seats" style="font-size: 0.85rem; opacity: 0.75;"></p>
                             <p class="text-center mb-4 d-none" id="rsvp-deadline-note" style="font-size: 0.85rem; opacity: 0.75;"></p>
@@ -546,10 +546,10 @@
                             <div id="rsvp-form">
                                 <div class="row g-2 mb-3">
                                     <div class="col-6">
-                                        <button type="button" class="btn btn-outline-auto w-100 rounded-4 shadow-sm py-2" id="rsvp-yes" onclick="undangan.guest.rsvpChoose(true)" data-offline-disabled="false"><i class="fa-solid fa-heart me-2"></i>Gladly Accept</button>
+                                        <button type="button" class="btn btn-outline-auto w-100 rounded-4 shadow-sm py-2" id="rsvp-yes" onclick="undangan.guest.rsvpChoose(true)" data-offline-disabled="false"><i class="fa-solid fa-heart me-2"></i><span data-content="rsvp_accept">Gladly Accept</span></button>
                                     </div>
                                     <div class="col-6">
-                                        <button type="button" class="btn btn-outline-auto w-100 rounded-4 shadow-sm py-2" id="rsvp-no" onclick="undangan.guest.rsvpChoose(false)" data-offline-disabled="false"><i class="fa-regular fa-face-frown me-2"></i>Sadly Decline</button>
+                                        <button type="button" class="btn btn-outline-auto w-100 rounded-4 shadow-sm py-2" id="rsvp-no" onclick="undangan.guest.rsvpChoose(false)" data-offline-disabled="false"><i class="fa-regular fa-face-frown me-2"></i><span data-content="rsvp_decline">Sadly Decline</span></button>
                                     </div>
                                 </div>
 
@@ -633,7 +633,7 @@
                 <!-- End Of Invitation -->
                 <section class="bg-white-black py-2 no-gap-bottom">
                     <div class="container text-center">
-                        <p class="pb-2 pt-4" style="font-size: 0.95rem;">Thank you for your attention and prayers, which are a great joy and honor for us.</p>
+                        <p class="pb-2 pt-4" style="font-size: 0.95rem;" data-content="closing_thanks">Thank you for your attention and prayers, which are a great joy and honor for us.</p>
 
                         <h2 class="font-esthetic" style="font-size: 2rem;" data-content="closing_greeting">Wassalamualaikum Warahmatullahi Wabarakatuh</h2>
                         <h2 class="font-arabic pt-4" style="font-size: 2rem;">اَلْحَمْدُ لِلّٰهِ رَبِّ الْعٰلَمِيْنَۙ</h2>
@@ -701,9 +701,9 @@
                 <img src="./assets/images/placeholder.webp" data-src="./assets/images/bg.webp" alt="background" class="img-center-crop rounded-circle border border-3 border-light shadow mb-4 mx-auto">
 
                 <h2 class="font-esthetic mb-4" style="font-size: 2.25rem;" data-content="couple_display">Wahyu &amp; Riski</h2>
-                <div id="guest-name" data-message="To the Honorable Mr./Mrs./Brother/Sister"></div>
+                <div id="guest-name" data-message="To the Honorable Mr./Mrs./Brother/Sister" data-content-attr="data-message:welcome_message"></div>
 
-                <button type="button" class="btn btn-light shadow rounded-4 mt-3 mx-auto" onclick="undangan.guest.open(this)"><i class="fa-solid fa-envelope-open fa-bounce me-2"></i>Open Invitation</button>
+                <button type="button" class="btn btn-light shadow rounded-4 mt-3 mx-auto" onclick="undangan.guest.open(this)"><i class="fa-solid fa-envelope-open fa-bounce me-2"></i><span data-content="open_button">Open Invitation</span></button>
             </div>
         </div>
     </div>
