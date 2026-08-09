@@ -19,7 +19,7 @@ export const admin = (() => {
      * @returns {string}
      */
     const guestLink = (token) => {
-        const base = window.location.href.split('?')[0].split('#')[0].replace(/dashboard(\.html)?$/, '');
+        const base = window.location.href.split('?')[0].split('#')[0].replace(/dashboard(\.html)?\/?$/, '');
         return `${base}?g=${token}`;
     };
 
