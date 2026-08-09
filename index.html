@@ -530,6 +530,39 @@
                     </div>
                 </section>
 
+                <!-- RSVP (shown only when opened from a personal invitation link) -->
+                <section class="bg-white-black pt-3 pb-4 d-none" id="rsvp">
+                    <div class="container">
+                        <div class="border rounded-5 shadow p-3" data-aos="fade-up" data-aos-duration="1500">
+                            <h2 class="font-esthetic text-center mt-2 mb-3" style="font-size: 2.25rem;">Will You Attend?</h2>
+
+                            <p class="text-center mb-1" style="font-size: 0.95rem;">Dear</p>
+                            <p class="text-center fw-bold mb-1" id="rsvp-greeting" style="font-size: 1.05rem;"></p>
+                            <p class="text-center mb-4" id="rsvp-seats" style="font-size: 0.85rem; opacity: 0.75;"></p>
+
+                            <div id="rsvp-form">
+                                <div class="row g-2 mb-3">
+                                    <div class="col-6">
+                                        <button type="button" class="btn btn-outline-auto w-100 rounded-4 shadow-sm py-2" id="rsvp-yes" onclick="undangan.guest.rsvpChoose(true)" data-offline-disabled="false"><i class="fa-solid fa-heart me-2"></i>Gladly Accept</button>
+                                    </div>
+                                    <div class="col-6">
+                                        <button type="button" class="btn btn-outline-auto w-100 rounded-4 shadow-sm py-2" id="rsvp-no" onclick="undangan.guest.rsvpChoose(false)" data-offline-disabled="false"><i class="fa-regular fa-face-frown me-2"></i>Sadly Decline</button>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 d-none" id="rsvp-count-wrapper">
+                                    <label for="rsvp-count" class="form-label my-1"><i class="fa-solid fa-user-group me-2"></i>How many will attend?</label>
+                                    <select class="form-select shadow-sm rounded-4" id="rsvp-count" autocomplete="off" data-offline-disabled="false"></select>
+                                </div>
+
+                                <button type="button" class="btn btn-primary w-100 rounded-4 shadow-sm" id="rsvp-submit" onclick="undangan.guest.rsvpSubmit(this)" data-offline-disabled="false" disabled>Send Response</button>
+                            </div>
+
+                            <div class="text-center d-none" id="rsvp-result"></div>
+                        </div>
+                    </div>
+                </section>
+
                 <!-- Comment -->
                 <section class="bg-light-dark my-0 pb-0 pt-3" id="comment">
                     <div class="container">
@@ -541,7 +574,7 @@
                                 <input dir="auto" type="text" class="form-control shadow-sm rounded-4" id="form-name" minlength="2" maxlength="50" placeholder="Enter your name" autocomplete="name" data-offline-disabled="false">
                             </div>
 
-                            <div class="mb-3">
+                            <div class="mb-3" id="form-presence-wrapper">
                                 <label for="form-presence" class="form-label my-1"><i class="fa-solid fa-person-circle-question me-2"></i>Attendance</label>
                                 <select class="form-select shadow-sm rounded-4" id="form-presence" autocomplete="off" data-offline-disabled="false">
                                     <option value="0" selected>Confirm Attendance</option>

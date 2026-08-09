@@ -1,6 +1,7 @@
 import { video } from './video.js';
 import { image } from './image.js';
 import { audio } from './audio.js';
+import { rsvp } from './rsvp.js';
 import { progress } from './progress.js';
 import { util } from '../../common/util.js';
 import { bs } from '../../libs/bootstrap.js';
@@ -71,6 +72,12 @@ export const guest = (() => {
 
         if (raw.length > 1 && raw[1].length >= 1) {
             name = window.decodeURIComponent(raw[1]);
+        }
+
+        // A personal invitation link carries the name server-side, which wins
+        // over anything passed in the query string.
+        if (rsvp.isActive()) {
+            name = rsvp.getName();
         }
 
         if (name) {
@@ -324,6 +331,9 @@ export const guest = (() => {
             document.getElementById('form-presence').value = information.get('presence') ? '1' : '2';
         }
 
+        // After the presence restore above, so a personal invitation's answer wins.
+        rsvp.show();
+
         if (information.get('info')) {
             document.getElementById('information')?.remove();
         }
@@ -372,8 +382,9 @@ export const guest = (() => {
         }
 
         if (token && token.length > 0) {
-            // add 2 progress for config and comment.
+            // add 3 progress for config, comment and the personal invitation.
             // before img.load();
+            progress.add();
             progress.add();
             progress.add();
 
@@ -387,6 +398,12 @@ export const guest = (() => {
                 progress.complete('config');
                 applyInvitationVisibility();
                 customTheme.apply(config);
+
+                // Resolved before booting() so the guest's name is ready by the
+                // time the welcome screen is rendered.
+                rsvp.load(params.get('g'))
+                    .then(() => progress.complete('guest'))
+                    .catch(() => progress.complete('guest'));
 
                 if (img.hasDataSrc()) {
                     img.load();
@@ -442,6 +459,8 @@ export const guest = (() => {
                 modal,
                 showStory,
                 closeInformation,
+                rsvpChoose: rsvp.choose,
+                rsvpSubmit: rsvp.submit,
             },
         };
     };

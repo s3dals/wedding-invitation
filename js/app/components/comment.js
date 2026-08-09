@@ -437,6 +437,15 @@ export const comment = (() => {
 
         const presence = document.getElementById('form-presence');
         if (!id && presence && presence.value === '0') {
+            // On a personal invitation the attendance select is hidden in favour
+            // of the RSVP section, so point there instead of at a hidden field.
+            const rsvpSection = document.getElementById('rsvp');
+            if (rsvpSection && !rsvpSection.classList.contains('d-none')) {
+                util.notify('Please answer the attendance question first.').warning();
+                rsvpSection.scrollIntoView({ block: 'center' });
+                return;
+            }
+
             util.notify('Please select your attendance status.').warning();
             return;
         }

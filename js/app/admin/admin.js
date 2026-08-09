@@ -8,9 +8,176 @@ import { storage } from '../../common/storage.js';
 import { session } from '../../common/session.js';
 import { offline } from '../../common/offline.js';
 import { comment } from '../components/comment.js';
-import { pool, request, HTTP_GET, HTTP_PATCH, HTTP_PUT } from '../../connection/request.js';
+import { pool, request, HTTP_GET, HTTP_PATCH, HTTP_PUT, HTTP_POST, HTTP_DELETE } from '../../connection/request.js';
 
 export const admin = (() => {
+
+    /**
+     * Personal invitation link for a guest token, derived from the dashboard URL.
+     *
+     * @param {string} token
+     * @returns {string}
+     */
+    const guestLink = (token) => {
+        const base = window.location.href.split('?')[0].split('#')[0].replace(/dashboard(\.html)?$/, '');
+        return `${base}?g=${token}`;
+    };
+
+    /**
+     * @param {{id: number, name: string, token: string, max_guests: number, status: string, guest_count: number}[]} guests
+     * @returns {void}
+     */
+    const renderGuestSummary = (guests) => {
+        const attending = guests.filter((g) => g.status === 'attending');
+        const declined = guests.filter((g) => g.status === 'declined');
+        const pending = guests.filter((g) => g.status === 'pending');
+        const heads = attending.reduce((sum, g) => sum + g.guest_count, 0);
+
+        document.getElementById('guest-count-total').textContent = String(guests.length);
+        document.getElementById('guest-count-attending').textContent = String(attending.length);
+        document.getElementById('guest-count-declined').textContent = String(declined.length);
+        document.getElementById('guest-count-pending').textContent = String(pending.length);
+        document.getElementById('guest-headcount').textContent = `${heads} ${heads === 1 ? 'person is' : 'people are'} expected to attend.`;
+    };
+
+    /**
+     * @param {number} id
+     * @param {HTMLElement} row
+     * @param {function} onDone
+     * @returns {void}
+     */
+    const deleteGuest = (id, row, onDone) => {
+        if (!util.ask('Are you sure?')) {
+            return;
+        }
+
+        request(HTTP_DELETE, `/api/guest/${id}`)
+            .token(session.getToken())
+            .send(dto.statusResponse)
+            .then((res) => {
+                if (!res.data.status) {
+                    return;
+                }
+
+                row.remove();
+                onDone();
+                util.notify('Success delete guest').success();
+            });
+    };
+
+    /**
+     * @param {{id: number, name: string, token: string, max_guests: number, status: string, guest_count: number}} guest
+     * @param {function} onDelete
+     * @returns {HTMLDivElement}
+     */
+    const renderGuestRow = (guest, onDelete) => {
+        const badges = {
+            attending: ['text-bg-success', 'Coming'],
+            declined: ['text-bg-secondary', 'Declined'],
+            pending: ['text-bg-warning', 'No reply'],
+        };
+        const [badgeClass, badgeText] = badges[guest.status] ?? badges.pending;
+
+        const row = document.createElement('div');
+        row.className = 'border rounded-4 p-2 mb-2';
+
+        const top = document.createElement('div');
+        top.className = 'd-flex justify-content-between align-items-center';
+
+        const label = document.createElement('p');
+        label.className = 'm-0 text-truncate me-2';
+        label.style.fontSize = '0.9rem';
+        label.textContent = guest.name;
+
+        const badge = document.createElement('span');
+        badge.className = `badge rounded-pill text-nowrap ${badgeClass}`;
+        badge.textContent = guest.status === 'attending' && guest.guest_count > 1
+            ? `${badgeText} (${guest.guest_count})`
+            : badgeText;
+
+        top.appendChild(label);
+        top.appendChild(badge);
+
+        const bottom = document.createElement('div');
+        bottom.className = 'd-flex justify-content-between align-items-center mt-2';
+
+        const seats = document.createElement('p');
+        seats.className = 'm-0 small';
+        seats.style.opacity = '0.75';
+        seats.textContent = guest.max_guests === 1 ? '1 seat' : `${guest.max_guests} seats`;
+
+        const actions = document.createElement('div');
+        actions.className = 'd-flex gap-2';
+
+        const copyBtn = document.createElement('button');
+        copyBtn.type = 'button';
+        copyBtn.className = 'btn btn-sm btn-outline-auto rounded-4 py-0';
+        copyBtn.style.fontSize = '0.75rem';
+        copyBtn.setAttribute('data-copy', guestLink(guest.token));
+        copyBtn.setAttribute('data-offline-disabled', 'false');
+        util.safeInnerHTML(copyBtn, '<i class="fa-solid fa-link me-1"></i>Copy link');
+        copyBtn.onclick = () => util.copy(copyBtn);
+
+        const delBtn = document.createElement('button');
+        delBtn.type = 'button';
+        delBtn.className = 'btn btn-sm btn-outline-auto rounded-4 py-0';
+        delBtn.style.fontSize = '0.75rem';
+        delBtn.setAttribute('data-offline-disabled', 'false');
+        util.safeInnerHTML(delBtn, '<i class="fa-solid fa-trash-can"></i>');
+        delBtn.onclick = () => onDelete(guest.id, row);
+
+        actions.appendChild(copyBtn);
+        actions.appendChild(delBtn);
+
+        bottom.appendChild(seats);
+        bottom.appendChild(actions);
+
+        row.appendChild(top);
+        row.appendChild(bottom);
+        return row;
+    };
+
+    /**
+     * @returns {void}
+     */
+    const loadGuestList = () => {
+        request(HTTP_GET, '/api/guest').token(session.getToken()).send().then((res) => {
+            const list = document.getElementById('guestList');
+            list.replaceChildren();
+            res.data.forEach((guest) => list.appendChild(
+                renderGuestRow(guest, (id, row) => deleteGuest(id, row, loadGuestList))
+            ));
+            renderGuestSummary(res.data);
+        });
+    };
+
+    /**
+     * @param {HTMLButtonElement} button
+     * @returns {void}
+     */
+    const addGuest = (button) => {
+        const name = document.getElementById('guestName');
+        const max = document.getElementById('guestMax');
+
+        if (name.value.trim().length === 0) {
+            util.notify('Guest name cannot be empty').warning();
+            return;
+        }
+
+        const btn = util.disableButton(button);
+
+        request(HTTP_POST, '/api/guest')
+            .token(session.getToken())
+            .body({ name: name.value.trim(), max_guests: parseInt(max.value) || 1 })
+            .send()
+            .then(() => {
+                name.value = '';
+                max.value = '1';
+                loadGuestList();
+                util.notify('Success add guest').success();
+            })
+            .finally(() => btn.restore(true));
+    };
 
     /**
      * @returns {Promise<void>}
@@ -41,6 +208,8 @@ export const admin = (() => {
         document.getElementById('themeBackgroundColor').value = res.data.theme_background_color || '#ffffff';
         document.getElementById('themeTextColor').value = res.data.theme_text_color || '#212529';
         document.getElementById('themeFont').value = res.data.theme_font || 'default';
+
+        loadGuestList();
 
         storage('config').set('tenor_key', res.data.tenor_key);
         document.dispatchEvent(new Event('undangan.session'));
@@ -407,6 +576,7 @@ export const admin = (() => {
                 changePassword,
                 changeCheckboxValue,
                 changeAppearance,
+                addGuest,
                 enableButtonName,
                 enableButtonPassword,
                 openLists,
