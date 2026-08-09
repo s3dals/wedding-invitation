@@ -30,12 +30,21 @@ export const navbar = (() => {
      * @param {HTMLElement} btn
      * @returns {void}
      */
+    const buttonNavInvitation = (btn) => {
+        showActiveTab(btn, 'button-invitation');
+    };
+
+    /**
+     * @param {HTMLElement} btn
+     * @returns {void}
+     */
     const buttonNavSetting = (btn) => {
         showActiveTab(btn, 'button-setting');
     };
 
     return {
         buttonNavHome,
+        buttonNavInvitation,
         buttonNavSetting,
     };
 })();
