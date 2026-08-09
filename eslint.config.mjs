@@ -35,4 +35,13 @@ export default [
       "no-nested-ternary": "warn",
     },
   },
+  {
+    // Cloudflare Pages Functions run on workerd, not in a browser: HTMLRewriter
+    // belongs to that runtime rather than being something the file forgot to
+    // import.
+    files: ["functions/**/*.js"],
+    languageOptions: {
+      globals: { ...globals.worker, HTMLRewriter: "readonly" },
+    },
+  },
 ];
