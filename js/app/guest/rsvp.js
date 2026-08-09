@@ -78,22 +78,23 @@ export const rsvp = (() => {
     };
 
     /**
-     * Built from the parts rather than parsed as a string, because
-     * new Date('2030-06-01') is UTC midnight and renders as the previous day
-     * for anyone west of Greenwich.
+     * Rendered as DD/MM/YYYY straight from the stored parts. Formatting the
+     * string directly, rather than going through a Date, keeps every guest
+     * seeing the same date: toLocaleDateString would reorder it per visitor,
+     * and parsing 'YYYY-MM-DD' as a Date lands on UTC midnight, which shows
+     * the previous day to anyone west of Greenwich.
      *
      * @param {string} value
      * @returns {string}
      */
     const formatDeadline = (value) => {
-        const [year, month, day] = String(value).split('-').map(Number);
-        const date = new Date(year, month - 1, day);
+        const [year, month, day] = String(value).split('-');
 
-        if (Number.isNaN(date.getTime())) {
+        if (!year || !month || !day) {
             return value;
         }
 
-        return date.toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' });
+        return `${day.padStart(2, '0')}/${month.padStart(2, '0')}/${year}`;
     };
 
     /**
