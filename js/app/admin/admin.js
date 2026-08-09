@@ -349,6 +349,8 @@ export const admin = (() => {
         document.getElementById('showBride').checked = Boolean(res.data.show_bride);
         document.getElementById('showWeddingDate').checked = Boolean(res.data.show_wedding_date);
         document.getElementById('showGallery').checked = Boolean(res.data.show_gallery);
+        document.getElementById('showStory').checked = res.data.show_story !== false;
+        document.getElementById('showGift').checked = res.data.show_gift !== false;
         document.getElementById('showComment').checked = Boolean(res.data.show_comment);
         document.getElementById('dashboard-tenorkey').value = res.data.tenor_key;
         document.getElementById('enableCustomTheme').checked = Boolean(res.data.is_custom_theme);

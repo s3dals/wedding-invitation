@@ -313,6 +313,8 @@ export const guest = (() => {
         toggleInvitationSection('bride', config.get('show_bride') !== false);
         toggleInvitationSection('wedding-date', config.get('show_wedding_date') !== false);
         toggleInvitationSection('gallery', config.get('show_gallery') !== false);
+        toggleInvitationSection('story', config.get('show_story') !== false);
+        toggleInvitationSection('gift', config.get('show_gift') !== false);
         toggleInvitationSection('comment', config.get('show_comment') !== false);
     };
 
