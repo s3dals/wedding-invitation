@@ -1,5 +1,6 @@
 import { auth } from './auth.js';
 import { navbar } from './navbar.js';
+import { contentFields } from './content-fields.js';
 import { util } from '../../common/util.js';
 import { dto } from '../../connection/dto.js';
 import { theme } from '../../common/theme.js';
@@ -183,6 +184,110 @@ export const admin = (() => {
     };
 
     /**
+     * Builds the text editor from the manifest, so a new field only has to be
+     * declared in content-fields.js and marked in index.html.
+     *
+     * @param {Record<string, string>} values
+     * @returns {void}
+     */
+    const renderContentForm = (values) => {
+        const root = document.getElementById('contentForm');
+        root.replaceChildren();
+
+        contentFields.forEach((section) => {
+            const card = document.createElement('div');
+            card.className = 'p-3 bg-theme-auto mb-3 rounded-4 shadow';
+
+            const title = document.createElement('p');
+            title.className = 'mx-0 mt-0 mb-3 p-0 fw-bold';
+            util.safeInnerHTML(title, `<i class="fa-solid ${util.escapeHtml(section.icon)} me-2"></i>${util.escapeHtml(section.group)}`);
+            card.appendChild(title);
+
+            section.fields.forEach((field) => {
+                const wrap = document.createElement('div');
+                wrap.className = 'mb-3';
+
+                const label = document.createElement('label');
+                label.className = 'form-label small mb-1';
+                label.setAttribute('for', `content-${field.key}`);
+                label.textContent = field.label;
+                wrap.appendChild(label);
+
+                const input = document.createElement(field.type === 'area' ? 'textarea' : 'input');
+                input.id = `content-${field.key}`;
+                input.className = 'form-control form-control-sm rounded-4 shadow-sm';
+                input.setAttribute('data-content-key', field.key);
+                input.setAttribute('data-offline-disabled', 'false');
+
+                if (field.type === 'area') {
+                    input.rows = 4;
+                } else {
+                    input.type = field.type === 'datetime' ? 'datetime-local' : 'text';
+                }
+
+                input.value = values[field.key] ?? '';
+                wrap.appendChild(input);
+
+                if (field.hint) {
+                    const hint = document.createElement('p');
+                    hint.className = 'small mt-1 mb-0';
+                    hint.style.opacity = '0.75';
+                    hint.textContent = field.hint;
+                    wrap.appendChild(hint);
+                }
+
+                card.appendChild(wrap);
+            });
+
+            root.appendChild(card);
+        });
+    };
+
+    /**
+     * @returns {void}
+     */
+    const loadContent = () => {
+        request(HTTP_GET, '/api/content').token(session.getToken()).send().then((res) => {
+            const values = { ...res.data };
+
+            // datetime-local will not accept a space between date and time.
+            if (values.event_datetime) {
+                values.event_datetime = String(values.event_datetime).replace(' ', 'T').slice(0, 16);
+            }
+
+            renderContentForm(values);
+        });
+    };
+
+    /**
+     * @param {HTMLButtonElement} button
+     * @returns {void}
+     */
+    const saveContent = (button) => {
+        const contents = {};
+
+        document.querySelectorAll('[data-content-key]').forEach((el) => {
+            let value = el.value.trim();
+
+            // Store the datetime the way the invitation reads it back.
+            if (el.type === 'datetime-local' && value.length > 0) {
+                value = value.replace('T', ' ');
+            }
+
+            contents[el.getAttribute('data-content-key')] = value;
+        });
+
+        const btn = util.disableButton(button);
+
+        request(HTTP_PUT, '/api/content')
+            .token(session.getToken())
+            .body({ contents })
+            .send()
+            .then(() => util.notify('Success save texts').success())
+            .finally(() => btn.restore());
+    };
+
+    /**
      * @returns {Promise<void>}
      */
     const getUserStats = () => auth.getDetailUser().then((res) => {
@@ -214,6 +319,7 @@ export const admin = (() => {
         document.getElementById('rsvpDeadline').value = res.data.rsvp_deadline || '';
 
         loadGuestList();
+        loadContent();
 
         storage('config').set('tenor_key', res.data.tenor_key);
         document.dispatchEvent(new Event('undangan.session'));
@@ -480,6 +586,7 @@ export const admin = (() => {
             });
     };
 
+
     /**
      * @param {HTMLButtonElement} button
      * @returns {void}
@@ -605,6 +712,7 @@ export const admin = (() => {
                 changeCheckboxValue,
                 changeAppearance,
                 changeRsvpDeadline,
+                saveContent,
                 addGuest,
                 enableButtonName,
                 enableButtonPassword,

@@ -1,0 +1,133 @@
+import { session } from './session.js';
+import { request, HTTP_GET } from '../connection/request.js';
+
+export const content = (() => {
+
+    /**
+     * @type {Record<string, string>}
+     */
+    let texts = {};
+
+    /**
+     * @param {string} key
+     * @returns {string|null}
+     */
+    const get = (key) => {
+        const value = texts[key];
+        return typeof value === 'string' && value.length > 0 ? value : null;
+    };
+
+    /**
+     * The stored value is "YYYY-MM-DD HH:MM" in the couple's own local time.
+     * Built from its parts because new Date('2027-05-22 10:00') is parsed
+     * inconsistently across browsers.
+     *
+     * @returns {Date|null}
+     */
+    const eventDate = () => {
+        const raw = get('event_datetime');
+        if (!raw) {
+            return null;
+        }
+
+        const [datePart, timePart = '00:00'] = raw.trim().split(/[ T]/);
+        const [year, month, day] = datePart.split('-').map(Number);
+        const [hour, minute] = timePart.split(':').map(Number);
+
+        const date = new Date(year, (month || 1) - 1, day || 1, hour || 0, minute || 0, 0);
+        return Number.isNaN(date.getTime()) ? null : date;
+    };
+
+    /**
+     * Every text carrying a data-content marker, plus the copy buttons that
+     * must keep showing the same value they display.
+     *
+     * @returns {void}
+     */
+    const applyTexts = () => {
+        document.querySelectorAll('[data-content]').forEach((el) => {
+            const value = get(el.getAttribute('data-content'));
+            if (value !== null) {
+                el.textContent = value;
+            }
+        });
+
+        document.querySelectorAll('[data-content-copy]').forEach((el) => {
+            const value = get(el.getAttribute('data-content-copy'));
+            if (value !== null) {
+                el.setAttribute('data-copy', value);
+            }
+        });
+    };
+
+    /**
+     * One stored datetime drives the countdown, the printed date and the
+     * calendar link, which the template previously hardcoded separately (and
+     * inconsistently).
+     *
+     * @returns {void}
+     */
+    const applyEventDate = () => {
+        const date = eventDate();
+        if (!date) {
+            return;
+        }
+
+        const pad = (n) => String(n).padStart(2, '0');
+        document.body.setAttribute(
+            'data-time',
+            `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:00`,
+        );
+
+        // Only fill the printed date when it has not been written by hand.
+        if (get('event_date_text') === null) {
+            const formatted = date.toLocaleDateString(undefined, {
+                weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+            });
+
+            document.querySelectorAll('[data-content="event_date_text"]').forEach((el) => {
+                el.textContent = formatted;
+            });
+        }
+    };
+
+    /**
+     * @returns {{title: string, details: string, location: string, start: Date|null}}
+     */
+    const calendar = () => ({
+        title: get('calendar_title') ?? (get('couple_display') ? `The Wedding of ${get('couple_display')}` : null),
+        details: get('calendar_details') ?? get('invite_line'),
+        location: get('venue_address'),
+        start: eventDate(),
+    });
+
+    /**
+     * @returns {void}
+     */
+    const apply = () => {
+        applyTexts();
+        applyEventDate();
+    };
+
+    /**
+     * @returns {Promise<void>}
+     */
+    const load = () => request(HTTP_GET, '/api/v2/content')
+        .token(session.getToken())
+        .send()
+        .then((res) => {
+            texts = res.data && typeof res.data === 'object' ? res.data : {};
+        })
+        .catch(() => {
+            // Falling back to whatever the template already says is better than
+            // rendering an invitation with holes in it.
+            texts = {};
+        });
+
+    return {
+        load,
+        apply,
+        get,
+        calendar,
+    };
+})();
