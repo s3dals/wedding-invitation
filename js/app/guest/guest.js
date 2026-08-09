@@ -83,10 +83,16 @@ export const guest = (() => {
 
         if (name) {
             const guestName = document.getElementById('guest-name');
+
+            // The wording above the name can be set per guest - so one
+            // invitation reads "Dear Mr." and the next "To the family of" -
+            // and falls back to the invitation-wide message when it is not.
+            const message = rsvp.getGreeting() ?? guestName?.getAttribute('data-message');
+
             const div = document.createElement('div');
             div.classList.add('m-2');
 
-            const template = `<small class="mt-0 mb-1 mx-0 p-0">${util.escapeHtml(guestName?.getAttribute('data-message'))}</small><p class="m-0 p-0" style="font-size: 1.25rem">${util.escapeHtml(name)}</p>`;
+            const template = `<small class="mt-0 mb-1 mx-0 p-0">${util.escapeHtml(message)}</small><p class="m-0 p-0" style="font-size: 1.25rem">${util.escapeHtml(name)}</p>`;
             util.safeInnerHTML(div, template);
 
             guestName?.appendChild(div);

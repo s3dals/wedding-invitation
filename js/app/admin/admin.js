@@ -25,7 +25,7 @@ export const admin = (() => {
     };
 
     /**
-     * @param {{id: number, name: string, token: string, max_guests: number, status: string, guest_count: number}[]} guests
+     * @param {{id: number, name: string, greeting: string|null, token: string, max_guests: number, status: string, guest_count: number}[]} guests
      * @returns {void}
      */
     const renderGuestSummary = (guests) => {
@@ -67,11 +67,109 @@ export const admin = (() => {
     };
 
     /**
-     * @param {{id: number, name: string, token: string, max_guests: number, status: string, guest_count: number}} guest
-     * @param {function} onDelete
-     * @returns {HTMLDivElement}
+     * Swaps the row's contents for an inline form. Editing in place rather
+     * than in a dialog keeps the guest being changed visible in the list.
+     *
+     * @param {{id: number, name: string, greeting: string|null, max_guests: number}} guest
+     * @param {HTMLElement} row
+     * @param {{onCancel: function, onSaved: function}} handlers
+     * @returns {void}
      */
-    const renderGuestRow = (guest, onDelete) => {
+    const renderGuestEdit = (guest, row, handlers) => {
+        const field = (label, input) => {
+            const wrap = document.createElement('div');
+            const tag = document.createElement('label');
+            tag.className = 'form-label small mb-1';
+            tag.textContent = label;
+            wrap.appendChild(tag);
+            wrap.appendChild(input);
+            return wrap;
+        };
+
+        const greeting = document.createElement('input');
+        greeting.type = 'text';
+        greeting.className = 'form-control form-control-sm rounded-4';
+        greeting.maxLength = 100;
+        greeting.placeholder = 'e.g. Dear Mr., To the family of';
+        greeting.value = guest.greeting ?? '';
+
+        const name = document.createElement('input');
+        name.type = 'text';
+        name.className = 'form-control form-control-sm rounded-4';
+        name.maxLength = 100;
+        name.value = guest.name;
+
+        const max = document.createElement('input');
+        max.type = 'number';
+        max.className = 'form-control form-control-sm rounded-4';
+        max.min = '1';
+        max.max = '20';
+        max.value = String(guest.max_guests);
+
+        const cancelBtn = document.createElement('button');
+        cancelBtn.type = 'button';
+        cancelBtn.className = 'btn btn-sm btn-outline-auto rounded-4';
+        cancelBtn.style.fontSize = '0.75rem';
+        cancelBtn.setAttribute('data-offline-disabled', 'false');
+        cancelBtn.textContent = 'Cancel';
+        cancelBtn.onclick = () => handlers.onCancel();
+
+        const saveBtn = document.createElement('button');
+        saveBtn.type = 'button';
+        saveBtn.className = 'btn btn-sm btn-primary rounded-4';
+        saveBtn.style.fontSize = '0.75rem';
+        saveBtn.setAttribute('data-offline-disabled', 'false');
+        saveBtn.textContent = 'Save';
+        saveBtn.onclick = () => {
+            if (name.value.trim().length === 0) {
+                util.notify('Guest name cannot be empty').warning();
+                return;
+            }
+
+            const btn = util.disableButton(saveBtn);
+
+            request(HTTP_PATCH, `/api/guest/${guest.id}`)
+                .token(session.getToken())
+                .body({
+                    name: name.value.trim(),
+                    // Always sent, so clearing the box is what removes a
+                    // greeting - the field is only skipped when absent.
+                    greeting: greeting.value.trim(),
+                    max_guests: parseInt(max.value) || 1,
+                })
+                .send()
+                .then(() => {
+                    handlers.onSaved();
+                    util.notify('Success update guest').success();
+                })
+                // The form stays on screen when the request fails, so the
+                // button has to come back for a second attempt.
+                .finally(() => btn.restore());
+        };
+
+        const actions = document.createElement('div');
+        actions.className = 'd-flex justify-content-end gap-2 mt-3';
+        actions.appendChild(cancelBtn);
+        actions.appendChild(saveBtn);
+
+        const form = document.createElement('div');
+        form.className = 'd-flex flex-column gap-2';
+        form.appendChild(field('Greeting above the name (optional)', greeting));
+        form.appendChild(field('Guest or family name', name));
+        form.appendChild(field('Seats', max));
+        form.appendChild(actions);
+
+        row.replaceChildren(form);
+        name.focus();
+    };
+
+    /**
+     * @param {{id: number, name: string, greeting: string|null, token: string, max_guests: number, status: string, guest_count: number}} guest
+     * @param {HTMLElement} row
+     * @param {{onDelete: function, onSaved: function}} handlers
+     * @returns {HTMLElement}
+     */
+    const renderGuestRow = (guest, row, handlers) => {
         const badges = {
             attending: ['text-bg-success', 'Coming'],
             declined: ['text-bg-secondary', 'Declined'],
@@ -79,16 +177,28 @@ export const admin = (() => {
         };
         const [badgeClass, badgeText] = badges[guest.status] ?? badges.pending;
 
-        const row = document.createElement('div');
-        row.className = 'border rounded-4 p-2 mb-2';
-
         const top = document.createElement('div');
         top.className = 'd-flex justify-content-between align-items-center';
 
-        const label = document.createElement('p');
-        label.className = 'm-0 text-truncate me-2';
-        label.style.fontSize = '0.9rem';
-        label.textContent = guest.name;
+        const label = document.createElement('div');
+        label.className = 'text-truncate me-2';
+
+        // The greeting sits above the name here exactly as it does on the
+        // invitation, so the owner can check at a glance that the wording
+        // matches the guest it was written for.
+        if (guest.greeting) {
+            const prefix = document.createElement('p');
+            prefix.className = 'm-0 small';
+            prefix.style.opacity = '0.75';
+            prefix.textContent = guest.greeting;
+            label.appendChild(prefix);
+        }
+
+        const who = document.createElement('p');
+        who.className = 'm-0';
+        who.style.fontSize = '0.9rem';
+        who.textContent = guest.name;
+        label.appendChild(who);
 
         const badge = document.createElement('span');
         badge.className = `badge rounded-pill text-nowrap ${badgeClass}`;
@@ -119,22 +229,35 @@ export const admin = (() => {
         util.safeInnerHTML(copyBtn, '<i class="fa-solid fa-link me-1"></i>Copy link');
         copyBtn.onclick = () => util.copy(copyBtn);
 
+        const editBtn = document.createElement('button');
+        editBtn.type = 'button';
+        editBtn.className = 'btn btn-sm btn-outline-auto rounded-4 py-0';
+        editBtn.style.fontSize = '0.75rem';
+        editBtn.setAttribute('data-offline-disabled', 'false');
+        util.safeInnerHTML(editBtn, '<i class="fa-solid fa-pen"></i>');
+        editBtn.onclick = () => renderGuestEdit(guest, row, {
+            // Cancelling redraws the row from the guest as it was, so nothing
+            // typed into the abandoned form survives.
+            onCancel: () => renderGuestRow(guest, row, handlers),
+            onSaved: handlers.onSaved,
+        });
+
         const delBtn = document.createElement('button');
         delBtn.type = 'button';
         delBtn.className = 'btn btn-sm btn-outline-auto rounded-4 py-0';
         delBtn.style.fontSize = '0.75rem';
         delBtn.setAttribute('data-offline-disabled', 'false');
         util.safeInnerHTML(delBtn, '<i class="fa-solid fa-trash-can"></i>');
-        delBtn.onclick = () => onDelete(guest.id, row);
+        delBtn.onclick = () => handlers.onDelete(guest.id, row);
 
         actions.appendChild(copyBtn);
+        actions.appendChild(editBtn);
         actions.appendChild(delBtn);
 
         bottom.appendChild(seats);
         bottom.appendChild(actions);
 
-        row.appendChild(top);
-        row.appendChild(bottom);
+        row.replaceChildren(top, bottom);
         return row;
     };
 
@@ -145,9 +268,19 @@ export const admin = (() => {
         request(HTTP_GET, '/api/guest').token(session.getToken()).send().then((res) => {
             const list = document.getElementById('guestList');
             list.replaceChildren();
-            res.data.forEach((guest) => list.appendChild(
-                renderGuestRow(guest, (id, row) => deleteGuest(id, row, loadGuestList))
-            ));
+
+            res.data.forEach((guest) => {
+                const row = document.createElement('div');
+                row.className = 'border rounded-4 p-2 mb-2';
+
+                list.appendChild(renderGuestRow(guest, row, {
+                    onDelete: (id, target) => deleteGuest(id, target, loadGuestList),
+                    // A saved edit can clamp guest_count down to the new seat
+                    // count, so the summary is refetched rather than patched.
+                    onSaved: loadGuestList,
+                }));
+            });
+
             renderGuestSummary(res.data);
         });
     };
@@ -159,6 +292,7 @@ export const admin = (() => {
     const addGuest = (button) => {
         const name = document.getElementById('guestName');
         const max = document.getElementById('guestMax');
+        const greeting = document.getElementById('guestGreeting');
 
         if (name.value.trim().length === 0) {
             util.notify('Guest name cannot be empty').warning();
@@ -169,11 +303,17 @@ export const admin = (() => {
 
         request(HTTP_POST, '/api/guest')
             .token(session.getToken())
-            .body({ name: name.value.trim(), max_guests: parseInt(max.value) || 1 })
+            .body({
+                name: name.value.trim(),
+                greeting: greeting.value.trim(),
+                max_guests: parseInt(max.value) || 1,
+            })
             .send()
             .then(() => {
                 name.value = '';
                 max.value = '1';
+                // The wording usually repeats across a run of guests, so it is
+                // left in place rather than cleared with the rest of the form.
                 loadGuestList();
                 util.notify('Success add guest').success();
             })
