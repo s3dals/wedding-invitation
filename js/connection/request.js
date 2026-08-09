@@ -356,7 +356,11 @@ export const request = (method, path) => {
                 }
 
                 if (err.name === ERROR_TYPE) {
-                    err = new Error('🟥 Network error or rate limit exceeded');
+                    // fetch only raises a TypeError when the request never
+                    // completed, so this is a connection, CORS or timeout
+                    // problem - naming a rate limit here sent an earlier
+                    // investigation down the wrong path entirely.
+                    err = new Error('🟥 Could not reach the server. It may have timed out, or you may be offline.');
                 }
 
                 alert(err.message ?? String(err));
