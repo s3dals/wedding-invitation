@@ -538,7 +538,8 @@
 
                             <p class="text-center mb-1" style="font-size: 0.95rem;">Dear</p>
                             <p class="text-center fw-bold mb-1" id="rsvp-greeting" style="font-size: 1.05rem;"></p>
-                            <p class="text-center mb-4" id="rsvp-seats" style="font-size: 0.85rem; opacity: 0.75;"></p>
+                            <p class="text-center mb-1" id="rsvp-seats" style="font-size: 0.85rem; opacity: 0.75;"></p>
+                            <p class="text-center mb-4 d-none" id="rsvp-deadline-note" style="font-size: 0.85rem; opacity: 0.75;"></p>
 
                             <div id="rsvp-form">
                                 <div class="row g-2 mb-3">
@@ -558,7 +559,10 @@
                                 <button type="button" class="btn btn-primary w-100 rounded-4 shadow-sm" id="rsvp-submit" onclick="undangan.guest.rsvpSubmit(this)" data-offline-disabled="false" disabled>Send Response</button>
                             </div>
 
-                            <div class="text-center d-none" id="rsvp-result"></div>
+                            <div class="text-center d-none" id="rsvp-result">
+                                <div id="rsvp-result-message"></div>
+                                <button type="button" class="btn btn-outline-auto btn-sm rounded-4 shadow-sm mt-3 d-none" id="rsvp-change" onclick="undangan.guest.rsvpChange()" data-offline-disabled="false"><i class="fa-solid fa-pen me-2"></i>Change my answer</button>
+                            </div>
                         </div>
                     </div>
                 </section>

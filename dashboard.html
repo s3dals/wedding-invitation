@@ -304,6 +304,21 @@
                             <p class="m-0 small" id="guest-headcount" style="opacity:0.75;"></p>
                         </div>
 
+                        <!-- Deadline -->
+                        <div class="p-3 bg-theme-auto mb-3 rounded-4 shadow">
+                            <p class="mx-0 mt-0 mb-1 p-0 fw-bold"><i class="fa-solid fa-calendar-day me-2"></i>Reply By</p>
+                            <p class="small mb-3" style="opacity:0.75;">Last day guests can answer or change their answer. Leave empty to keep it open.</p>
+
+                            <div class="input-group input-group-sm mb-3">
+                                <input type="date" class="form-control form-control-sm rounded-start-4 shadow-sm" id="rsvpDeadline" autocomplete="off" data-offline-disabled="false">
+                                <button class="btn btn-sm btn-outline-secondary rounded-end-4 shadow-sm" type="button" onclick="document.getElementById('rsvpDeadline').value = ''"><i class="fa-solid fa-trash-can"></i></button>
+                            </div>
+
+                            <div class="d-flex justify-content-end">
+                                <button type="button" class="btn btn-sm btn-primary rounded-4 shadow-sm" onclick="undangan.admin.changeRsvpDeadline(this)" data-offline-disabled="false">Save</button>
+                            </div>
+                        </div>
+
                         <!-- Add Guest -->
                         <div class="p-3 bg-theme-auto mb-3 rounded-4 shadow">
                             <p class="mx-0 mt-0 mb-1 p-0 fw-bold"><i class="fa-solid fa-user-plus me-2"></i>Add Guest</p>

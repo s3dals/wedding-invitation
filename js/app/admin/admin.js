@@ -211,6 +211,7 @@ export const admin = (() => {
         document.getElementById('themeBackgroundColor').value = res.data.theme_background_color || '#ffffff';
         document.getElementById('themeTextColor').value = res.data.theme_text_color || '#212529';
         document.getElementById('themeFont').value = res.data.theme_font || 'default';
+        document.getElementById('rsvpDeadline').value = res.data.rsvp_deadline || '';
 
         loadGuestList();
 
@@ -483,6 +484,28 @@ export const admin = (() => {
      * @param {HTMLButtonElement} button
      * @returns {void}
      */
+    const changeRsvpDeadline = (button) => {
+        const deadline = document.getElementById('rsvpDeadline');
+        const btn = util.disableButton(button);
+
+        request(HTTP_PATCH, '/api/user')
+            .token(session.getToken())
+            .body({ rsvp_deadline: deadline.value })
+            .send(dto.statusResponse)
+            .then((res) => {
+                if (!res.data.status) {
+                    return;
+                }
+
+                util.notify(deadline.value.length ? 'Success change deadline' : 'Success remove deadline').success();
+            })
+            .finally(() => btn.restore());
+    };
+
+    /**
+     * @param {HTMLButtonElement} button
+     * @returns {void}
+     */
     const changeAppearance = (button) => {
         const primary = document.getElementById('themePrimaryColor');
         const secondary = document.getElementById('themeSecondaryColor');
@@ -581,6 +604,7 @@ export const admin = (() => {
                 changePassword,
                 changeCheckboxValue,
                 changeAppearance,
+                changeRsvpDeadline,
                 addGuest,
                 enableButtonName,
                 enableButtonPassword,

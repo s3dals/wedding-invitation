@@ -461,6 +461,7 @@ export const guest = (() => {
                 closeInformation,
                 rsvpChoose: rsvp.choose,
                 rsvpSubmit: rsvp.submit,
+                rsvpChange: rsvp.changeAnswer,
             },
         };
     };
