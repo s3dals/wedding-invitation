@@ -275,6 +275,18 @@ export const admin = (() => {
                     }
                 });
 
+                // Some texts live in an attribute rather than in the element,
+                // and must prefill too - saving an empty box would otherwise
+                // wipe the link or greeting they hold.
+                doc.querySelectorAll('[data-content-attr]').forEach((el) => {
+                    const [attribute, key] = String(el.getAttribute('data-content-attr')).split(':');
+                    const value = attribute ? (el.getAttribute(attribute) ?? '').trim() : '';
+
+                    if (key && !defaults[key] && value.length > 0) {
+                        defaults[key] = value;
+                    }
+                });
+
                 return defaults;
             })
             .catch(() => ({}));
