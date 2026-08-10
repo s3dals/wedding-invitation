@@ -21,11 +21,12 @@ export const auth = (() => {
 
         const formEmail = document.getElementById('loginEmail');
         const formPassword = document.getElementById('loginPassword');
+        const formRemember = document.getElementById('loginRemember');
 
         formEmail.disabled = true;
         formPassword.disabled = true;
 
-        session.login(dto.postSessionRequest(formEmail.value, formPassword.value)).then((res) => {
+        session.login(dto.postSessionRequest(formEmail.value, formPassword.value, formRemember?.checked ?? false)).then((res) => {
             if (res) {
                 formEmail.value = null;
                 formPassword.value = null;

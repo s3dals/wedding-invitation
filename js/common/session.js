@@ -100,6 +100,33 @@ export const session = (() => {
     };
 
     /**
+     * Trades a still-valid token for a fresh one, so a dashboard that is being
+     * used keeps sliding forward rather than expiring mid-edit.
+     *
+     * A failure is not worth surfacing: the token in hand is still good until
+     * its own expiry, so the only cost is that the window stops sliding.
+     *
+     * @returns {Promise<boolean>}
+     */
+    const refresh = () => {
+        if (!isValid()) {
+            return Promise.resolve(false);
+        }
+
+        return request(HTTP_POST, '/api/session/refresh')
+            .token(getToken())
+            .send(dto.tokenResponse)
+            .then((res) => {
+                if (res.code === HTTP_STATUS_OK) {
+                    setToken(res.data.token);
+                }
+
+                return res.code === HTTP_STATUS_OK;
+            })
+            .catch(() => false);
+    };
+
+    /**
      * @returns {void}
      */
     const init = () => {
@@ -112,6 +139,7 @@ export const session = (() => {
         isValid,
         login,
         logout,
+        refresh,
         decode,
         isAdmin,
         setToken,
