@@ -7,10 +7,10 @@ export const customTheme = (() => {
      * script gets its own list below rather than sharing this one.
      */
     const fonts = {
-        elegant: { family: 'Playfair Display', css: 'https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap', stack: "'Playfair Display', serif" },
-        modern: { family: 'Poppins', css: 'https://fonts.googleapis.com/css2?family=Poppins&display=swap', stack: "'Poppins', sans-serif" },
-        classic: { family: 'Merriweather', css: 'https://fonts.googleapis.com/css2?family=Merriweather&display=swap', stack: "'Merriweather', serif" },
-        script: { family: 'Great Vibes', css: 'https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap', stack: "'Great Vibes', cursive" },
+        elegant: { family: 'Playfair Display', css: 'https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap', generic: 'serif' },
+        modern: { family: 'Poppins', css: 'https://fonts.googleapis.com/css2?family=Poppins&display=swap', generic: 'sans-serif' },
+        classic: { family: 'Merriweather', css: 'https://fonts.googleapis.com/css2?family=Merriweather&display=swap', generic: 'serif' },
+        script: { family: 'Great Vibes', css: 'https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap', generic: 'cursive' },
     };
 
     /**
@@ -19,12 +19,19 @@ export const customTheme = (() => {
      * hard work as body text - which is why the label says so in the dashboard.
      */
     const arabicFonts = {
-        naskh: { family: 'Noto Naskh Arabic', css: 'https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic&display=swap&subset=arabic', stack: "'Noto Naskh Arabic', serif" },
-        amiri: { family: 'Amiri', css: 'https://fonts.googleapis.com/css2?family=Amiri&display=swap&subset=arabic', stack: "'Amiri', serif" },
-        cairo: { family: 'Cairo', css: 'https://fonts.googleapis.com/css2?family=Cairo&display=swap&subset=arabic', stack: "'Cairo', sans-serif" },
-        tajawal: { family: 'Tajawal', css: 'https://fonts.googleapis.com/css2?family=Tajawal&display=swap&subset=arabic', stack: "'Tajawal', sans-serif" },
-        kufi: { family: 'Reem Kufi', css: 'https://fonts.googleapis.com/css2?family=Reem+Kufi&display=swap&subset=arabic', stack: "'Reem Kufi', sans-serif" },
+        naskh: { family: 'Noto Naskh Arabic', css: 'https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic&display=swap&subset=arabic', generic: 'serif' },
+        amiri: { family: 'Amiri', css: 'https://fonts.googleapis.com/css2?family=Amiri&display=swap&subset=arabic', generic: 'serif' },
+        cairo: { family: 'Cairo', css: 'https://fonts.googleapis.com/css2?family=Cairo&display=swap&subset=arabic', generic: 'sans-serif' },
+        tajawal: { family: 'Tajawal', css: 'https://fonts.googleapis.com/css2?family=Tajawal&display=swap&subset=arabic', generic: 'sans-serif' },
+        kufi: { family: 'Reem Kufi', css: 'https://fonts.googleapis.com/css2?family=Reem+Kufi&display=swap&subset=arabic', generic: 'sans-serif' },
     };
+
+    /**
+     * The template's decorative face, used by .font-esthetic for the couple's
+     * names and every section heading. It was declared in the CSS but never
+     * fetched, so those headings fell through to the browser's default cursive.
+     */
+    const esthetic = { family: 'Sacramento', css: 'https://fonts.googleapis.com/css2?family=Sacramento&display=swap' };
 
     let active = false;
 
@@ -108,7 +115,7 @@ export const customTheme = (() => {
     /**
      * @param {Record<string, {family: string, css: string, stack: string}>} table
      * @param {string|null} key
-     * @returns {Promise<string|null>}
+     * @returns {Promise<{family: string, generic: string}|null>}
      */
     const loadFont = (table, key) => {
         const font = table[key];
@@ -126,14 +133,19 @@ export const customTheme = (() => {
             link.rel = 'stylesheet';
             link.href = uri;
             document.head.appendChild(link);
-        })).then(() => document.fonts.load(`1em "${font.family}"`)).then(() => font.stack);
+        })).then(() => document.fonts.load(`1em "${font.family}"`)).then(() => font);
     };
 
     /**
-     * The two faces are combined into one stack rather than applied separately.
-     * A browser resolves font-family per character, so Latin glyphs come from
-     * the Latin face and Arabic glyphs fall through to the Arabic one - which
-     * is what an invitation mixing "Saed & Aya" with Arabic actually needs.
+     * Both faces go into one stack, because a browser resolves font-family per
+     * character: Latin glyphs come from the Latin face and Arabic glyphs fall
+     * through to the Arabic one, which is what "Saed & Aya" beside Arabic needs.
+     *
+     * The generic keyword has to come last, and that is the whole point of
+     * building the stack here rather than storing it. A generic like `serif`
+     * resolves to a real system font, and on a phone that font almost always
+     * covers Arabic - so leaving it in the middle silently satisfies every
+     * Arabic character before the chosen Arabic face is ever reached.
      *
      * @param {string|null} latinKey
      * @param {string|null} arabicKey
@@ -142,15 +154,17 @@ export const customTheme = (() => {
     const setFonts = (latinKey, arabicKey) => Promise.all([
         loadFont(fonts, latinKey),
         loadFont(arabicFonts, arabicKey),
+        loadFont({ esthetic }, 'esthetic'),
     ]).then(([latin, arabic]) => {
         const root = document.documentElement.style;
 
         if (arabic) {
-            root.setProperty('--theme-font-arabic', arabic);
+            root.setProperty('--theme-font-arabic', `'${arabic.family}', ${arabic.generic}`);
         }
 
         if (latin || arabic) {
-            root.setProperty('--theme-font', [latin, arabic].filter(Boolean).join(', '));
+            const families = [latin, arabic].filter(Boolean).map((f) => `'${f.family}'`);
+            root.setProperty('--theme-font', `${families.join(', ')}, ${(latin ?? arabic).generic}`);
         }
     });
 

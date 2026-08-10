@@ -12,7 +12,10 @@ html {
 }
 
 .font-esthetic {
-    font-family: 'Sacramento', cursive !important;
+    /* Sacramento carries no Arabic, so Arabic headings continue to the chosen
+       Arabic face rather than dropping to the browser's default cursive. Every
+       section heading on the invitation lives in this class. */
+    font-family: 'Sacramento', var(--theme-font-arabic) !important;
 }
 
 .font-arabic {
