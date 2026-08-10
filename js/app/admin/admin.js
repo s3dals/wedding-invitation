@@ -326,6 +326,47 @@ export const admin = (() => {
     };
 
     /**
+     * The sticky save bar sits above the fixed bottom navigation, so it needs
+     * that bar's height. Measured rather than hardcoded: the value changes with
+     * the user's font size, and goes to zero at the breakpoint where the
+     * navigation is hidden.
+     *
+     * @returns {void}
+     */
+    const trackBottomNavHeight = () => {
+        const nav = document.querySelector('nav.fixed-bottom');
+
+        // offsetHeight is 0 once the bar is hidden at md and up, which is
+        // exactly the offset wanted there.
+        const measure = () => document.documentElement.style.setProperty(
+            '--admin-bottom-nav',
+            `${nav?.offsetHeight ?? 0}px`,
+        );
+
+        measure();
+        window.addEventListener('resize', measure);
+    };
+
+    /**
+     * Tracks whether the text form has edits the server has not seen. The
+     * save bar is always on screen now, so it may as well say whether pressing
+     * it would do anything.
+     *
+     * @param {boolean} dirty
+     * @returns {void}
+     */
+    const markContentDirty = (dirty) => {
+        const hint = document.getElementById('contentSaveHint');
+        if (!hint) {
+            return;
+        }
+
+        hint.textContent = dirty ? 'Unsaved changes' : 'No changes yet';
+        hint.classList.toggle('fw-semibold', dirty);
+        hint.style.opacity = dirty ? '1' : '0.75';
+    };
+
+    /**
      * Builds the text editor from the manifest, so a new field only has to be
      * declared in content-fields.js and marked in index.html.
      *
@@ -336,6 +377,12 @@ export const admin = (() => {
     const renderContentForm = (values, defaults) => {
         const root = document.getElementById('contentForm');
         root.replaceChildren();
+
+        // Assigned rather than added, so rebuilding the form cannot stack up
+        // duplicate listeners on the container.
+        root.oninput = () => markContentDirty(true);
+        markContentDirty(false);
+        trackBottomNavHeight();
 
         contentFields.forEach((section) => {
             const card = document.createElement('div');
@@ -477,7 +524,10 @@ export const admin = (() => {
             .token(session.getToken())
             .body({ contents })
             .send()
-            .then(() => util.notify('Success save texts').success())
+            .then(() => {
+                markContentDirty(false);
+                util.notify('Success save texts').success();
+            })
             .finally(() => btn.restore());
     };
 

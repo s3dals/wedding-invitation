@@ -46,3 +46,12 @@ html[data-bs-theme="light"] .btn-theme-auto:hover:not(.nav-link.active) {
     color: var(--bs-light) !important;
     background-color: var(--bs-danger) !important;
 }
+
+/* The save bar on the Texts tab rides the bottom of the viewport instead of
+   sitting at the end of a very long form. It has to clear the fixed bottom
+   navigation, whose height is measured at runtime rather than guessed - on
+   md and up that navigation is hidden and the measurement is simply 0. */
+.save-bar {
+    bottom: var(--admin-bottom-nav, 0px);
+    z-index: 1020;
+}
