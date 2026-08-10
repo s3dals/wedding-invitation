@@ -16,7 +16,7 @@ html {
 }
 
 .font-arabic {
-    font-family: 'Noto Naskh Arabic', serif !important;
+    font-family: var(--theme-font-arabic) !important;
 }
 
 .img-center-crop {
@@ -121,11 +121,46 @@ html.custom-theme-active .btn-transparent {
 }
 
 html.custom-theme-active .color-theme-svg {
-    color: var(--theme-text);
+    color: var(--theme-divider);
     background-color: var(--theme-background);
 }
 
-html.custom-theme-active .bg-light-dark,
 html.custom-theme-active .bg-white-black {
     background-color: var(--theme-background) !important;
+}
+
+/* The template alternates two shades between sections, and that alternation is
+   what separates them. Pointing both at the background colour collapsed the
+   whole page to one flat tone, so the second shade is derived instead - which
+   works for a light or a dark palette without another setting to get wrong. */
+html.custom-theme-active .bg-light-dark {
+    background-color: color-mix(in srgb, var(--theme-background) 95%, var(--theme-text)) !important;
+}
+
+/* Bootstrap's left-to-right build compiles the logical spacing utilities down
+   to physical properties, so the ones this page uses need mirroring by hand.
+   Loading the whole RTL stylesheet instead would cost a second 230 kB download
+   for the sake of five rules. */
+html[dir="rtl"] .me-1 {
+    margin-right: 0 !important;
+    margin-left: 0.25rem !important;
+}
+
+html[dir="rtl"] .me-2 {
+    margin-right: 0 !important;
+    margin-left: 0.5rem !important;
+}
+
+html[dir="rtl"] .ms-1 {
+    margin-left: 0 !important;
+    margin-right: 0.25rem !important;
+}
+
+html[dir="rtl"] .text-start {
+    text-align: right !important;
+}
+
+html[dir="rtl"] .end-0 {
+    right: auto !important;
+    left: 0 !important;
 }

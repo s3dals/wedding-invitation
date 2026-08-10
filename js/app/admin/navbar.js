@@ -46,6 +46,14 @@ export const navbar = (() => {
      * @param {HTMLElement} btn
      * @returns {void}
      */
+    const buttonNavStyle = (btn) => {
+        showActiveTab(btn, 'button-style');
+    };
+
+    /**
+     * @param {HTMLElement} btn
+     * @returns {void}
+     */
     const buttonNavSetting = (btn) => {
         showActiveTab(btn, 'button-setting');
     };
@@ -54,6 +62,7 @@ export const navbar = (() => {
         buttonNavHome,
         buttonNavInvitation,
         buttonNavText,
+        buttonNavStyle,
         buttonNavSetting,
     };
 })();

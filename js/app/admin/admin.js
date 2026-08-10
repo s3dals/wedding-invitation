@@ -1,12 +1,14 @@
 import { auth } from './auth.js';
 import { navbar } from './navbar.js';
 import { contentFields } from './content-fields.js';
+import { themePresets } from './theme-presets.js';
 import { util } from '../../common/util.js';
 import { dto } from '../../connection/dto.js';
 import { theme } from '../../common/theme.js';
 import { lang } from '../../common/language.js';
 import { storage } from '../../common/storage.js';
 import { session } from '../../common/session.js';
+import { customTheme } from '../../common/custom-theme.js';
 import { offline } from '../../common/offline.js';
 import { comment } from '../components/comment.js';
 import { pool, request, HTTP_GET, HTTP_PATCH, HTTP_PUT, HTTP_POST, HTTP_DELETE } from '../../connection/request.js';
@@ -480,6 +482,113 @@ export const admin = (() => {
     };
 
     /**
+     * Warns, never blocks. A deliberately soft watermark is a valid choice; a
+     * button nobody can read is not, and until now nothing said which was which.
+     *
+     * @returns {void}
+     */
+    const renderContrastReport = () => {
+        const root = document.getElementById('contrastReport');
+        if (!root) {
+            return;
+        }
+
+        const background = document.getElementById('themeBackgroundColor').value;
+        const text = document.getElementById('themeTextColor').value;
+        const primary = document.getElementById('themePrimaryColor').value;
+
+        const checks = [
+            { label: 'Text on background', ratio: customTheme.contrast(text, background), min: 4.5 },
+            { label: 'Button label', ratio: customTheme.contrast(customTheme.readableOn(primary), primary), min: 4.5 },
+        ];
+
+        root.replaceChildren();
+
+        checks.forEach((check) => {
+            const ok = check.ratio >= check.min;
+
+            const line = document.createElement('p');
+            line.className = `small m-0 mt-1 px-2 py-1 rounded-3 ${ok ? 'text-bg-success' : 'text-bg-warning'}`;
+            line.textContent = ok
+                ? `${check.label}: ${check.ratio.toFixed(1)}:1 — easy to read`
+                : `${check.label}: ${check.ratio.toFixed(1)}:1 — may be hard to read`;
+
+            root.appendChild(line);
+        });
+    };
+
+    /**
+     * @returns {void}
+     */
+    const renderThemePresets = () => {
+        const root = document.getElementById('themePresets');
+        if (!root) {
+            return;
+        }
+
+        root.replaceChildren();
+
+        themePresets.forEach((preset) => {
+            const col = document.createElement('div');
+            col.className = 'col-6 col-md-4';
+
+            const card = document.createElement('button');
+            card.type = 'button';
+            card.className = 'btn w-100 rounded-4 shadow-sm border py-2 px-1';
+            card.style.backgroundColor = preset.background;
+            card.style.color = preset.text;
+            card.style.fontSize = '0.75rem';
+            card.setAttribute('data-offline-disabled', 'false');
+
+            const swatches = document.createElement('span');
+            swatches.className = 'd-flex justify-content-center gap-1 mb-1';
+
+            [preset.background, preset.primary, preset.text].forEach((colour) => {
+                const dot = document.createElement('span');
+                dot.className = 'd-block rounded-circle border';
+                dot.style.width = '0.9rem';
+                dot.style.height = '0.9rem';
+                dot.style.backgroundColor = colour;
+                swatches.appendChild(dot);
+            });
+
+            const name = document.createElement('span');
+            name.className = 'd-block fw-semibold';
+            name.textContent = preset.name;
+
+            card.appendChild(swatches);
+            card.appendChild(name);
+
+            // Fills the inputs and leaves them editable - a starting point, not
+            // a lock. Nothing is saved until Save is pressed.
+            card.onclick = () => {
+                document.getElementById('themePrimaryColor').value = preset.primary;
+                document.getElementById('themeSecondaryColor').value = preset.secondary;
+                document.getElementById('themeBackgroundColor').value = preset.background;
+                document.getElementById('themeTextColor').value = preset.text;
+                document.getElementById('themeDividerColor').value = preset.text;
+                document.getElementById('enableCustomTheme').checked = true;
+                renderContrastReport();
+                util.notify(`${preset.name} loaded — press Save to keep it`).info();
+            };
+
+            col.appendChild(card);
+            root.appendChild(col);
+        });
+    };
+
+    /**
+     * Dividers follow the text colour unless something else is chosen, so
+     * "match" is simply setting them equal again.
+     *
+     * @returns {void}
+     */
+    const resetDividerColour = () => {
+        document.getElementById('themeDividerColor').value = document.getElementById('themeTextColor').value;
+        renderContrastReport();
+    };
+
+    /**
      * @returns {Promise<void>}
      */
     const getUserStats = () => auth.getDetailUser().then((res) => {
@@ -511,6 +620,17 @@ export const admin = (() => {
         document.getElementById('themeBackgroundColor').value = res.data.theme_background_color || '#ffffff';
         document.getElementById('themeTextColor').value = res.data.theme_text_color || '#212529';
         document.getElementById('themeFont').value = res.data.theme_font || 'default';
+        document.getElementById('themeFontArabic').value = res.data.theme_font_arabic || 'default';
+        document.getElementById('themeDirection').value = res.data.theme_direction || 'auto';
+        // No stored divider colour means it follows the text colour.
+        document.getElementById('themeDividerColor').value = res.data.theme_divider_color || res.data.theme_text_color || '#212529';
+
+        renderThemePresets();
+        renderContrastReport();
+
+        ['themePrimaryColor', 'themeBackgroundColor', 'themeTextColor'].forEach((id) => {
+            document.getElementById(id).addEventListener('input', renderContrastReport);
+        });
         document.getElementById('rsvpDeadline').value = res.data.rsvp_deadline || '';
 
         loadGuestList();
@@ -809,22 +929,21 @@ export const admin = (() => {
      * @returns {void}
      */
     const changeAppearance = (button) => {
-        const primary = document.getElementById('themePrimaryColor');
-        const secondary = document.getElementById('themeSecondaryColor');
-        const background = document.getElementById('themeBackgroundColor');
+        const divider = document.getElementById('themeDividerColor');
         const text = document.getElementById('themeTextColor');
-        const font = document.getElementById('themeFont');
 
         const btn = util.disableButton(button);
 
         request(HTTP_PATCH, '/api/user')
             .token(session.getToken())
             .body({
-                theme_primary_color: primary.value,
-                theme_secondary_color: secondary.value,
-                theme_background_color: background.value,
+                theme_primary_color: document.getElementById('themePrimaryColor').value,
+                theme_secondary_color: document.getElementById('themeSecondaryColor').value,
+                theme_background_color: document.getElementById('themeBackgroundColor').value,
                 theme_text_color: text.value,
-                theme_font: font.value,
+                // Sending an empty string is how the dividers go back to
+                // following the text colour.
+                theme_divider_color: divider.value === text.value ? '' : divider.value,
             })
             .send(dto.statusResponse)
             .then((res) => {
@@ -832,12 +951,56 @@ export const admin = (() => {
                     return;
                 }
 
-                util.notify('Success change appearance').success();
+                util.notify('Success change colours').success();
             })
             // See addGuest: this button has no re-enable handler either, so it
             // must not be left disabled after a save.
             .finally(() => btn.restore());
     };
+
+    /**
+     * @param {HTMLButtonElement} button
+     * @returns {void}
+     */
+    const changeFonts = (button) => {
+        const btn = util.disableButton(button);
+
+        request(HTTP_PATCH, '/api/user')
+            .token(session.getToken())
+            .body({
+                theme_font: document.getElementById('themeFont').value,
+                theme_font_arabic: document.getElementById('themeFontArabic').value,
+            })
+            .send(dto.statusResponse)
+            .then((res) => {
+                if (res.data.status) {
+                    util.notify('Success change fonts').success();
+                }
+            })
+            .finally(() => btn.restore());
+    };
+
+    /**
+     * @param {HTMLButtonElement} button
+     * @returns {void}
+     */
+    const changeDirection = (button) => {
+        const btn = util.disableButton(button);
+
+        request(HTTP_PATCH, '/api/user')
+            .token(session.getToken())
+            .body({ theme_direction: document.getElementById('themeDirection').value })
+            .send(dto.statusResponse)
+            .then((res) => {
+                if (res.data.status) {
+                    util.notify('Success change direction').success();
+                }
+            })
+            .finally(() => btn.restore());
+    };
+
+
+
 
     /**
      * @returns {void}
@@ -906,6 +1069,9 @@ export const admin = (() => {
                 changePassword,
                 changeCheckboxValue,
                 changeAppearance,
+                changeFonts,
+                changeDirection,
+                resetDividerColour,
                 changeRsvpDeadline,
                 saveContent,
                 addGuest,
