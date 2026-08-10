@@ -324,13 +324,16 @@
                         <h2 class="font-esthetic py-4 m-0" style="font-size: 2.25rem;" data-content="moment_heading">Happy Moment</h2>
 
                         <div class="border rounded-pill shadow py-2 px-4 mt-2 mb-4">
-                            <!-- Pinned left-to-right on purpose: digits read the same way in every
-                                 script, so the group looks identical in Arabic and in English and
-                                 needs no words. The words survive below for screen readers, which a
-                                 bare row of numbers would tell nothing at all. -->
-                            <div class="d-flex justify-content-center align-items-baseline gap-3" dir="ltr" aria-hidden="true">
-                                <p class="m-0 p-0 countdown-days" id="day">0</p>
-                                <p class="m-0 p-0 countdown-clock"><span id="hour">00</span><span class="countdown-sep">:</span><span id="minute">00</span><span class="countdown-sep">:</span><span id="second">00</span></p>
+                            <!-- The day figure follows the page direction so its word lands where
+                                 the reader expects it: in Arabic the number belongs on the right
+                                 and the word to its left, the opposite of English. The clock is
+                                 pinned left-to-right instead - 22:45:04 reads the same way in
+                                 every script, and hours must never swap places with seconds. Both
+                                 are repeated in words below for screen readers, which a bare row
+                                 of numbers would tell nothing at all. -->
+                            <div class="d-flex justify-content-center align-items-baseline gap-3" aria-hidden="true">
+                                <p class="m-0 p-0 countdown-days"><span id="day">0</span><span class="countdown-unit" data-content="countdown_days">Days</span></p>
+                                <p class="m-0 p-0 countdown-clock" dir="ltr"><span id="hour">00</span><span class="countdown-sep">:</span><span id="minute">00</span><span class="countdown-sep">:</span><span id="second">00</span></p>
                             </div>
                             <span class="visually-hidden" id="countdown-text"></span>
                         </div>

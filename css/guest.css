@@ -190,3 +190,12 @@ html[dir="rtl"] .end-0 {
     opacity: 0.55;
     padding: 0 0.1rem;
 }
+
+/* The one word on the countdown. It sits after the number, which is the right
+   order in Arabic as well as English, and it is sized off the number so the two
+   stay in proportion whatever the theme font is. */
+.countdown-unit {
+    font-size: 0.5em;
+    margin-inline-start: 0.3rem;
+    opacity: 0.8;
+}
