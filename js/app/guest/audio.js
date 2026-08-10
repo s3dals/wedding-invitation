@@ -27,6 +27,7 @@ export const audio = (() => {
         try {
             audioEl = new Audio(await cache('audio').withForceCache().get(url, progress.getAbort()));
             audioEl.loop = true;
+            audioEl.volume = 0.2;
             audioEl.muted = false;
             audioEl.autoplay = false;
             audioEl.controls = false;
