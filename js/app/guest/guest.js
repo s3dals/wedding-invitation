@@ -354,6 +354,10 @@ export const guest = (() => {
         // values that the stored content may have just replaced.
         content.apply();
 
+        // After content.apply(): "auto" direction reads the invitation's own
+        // words, which are only in the DOM once the stored text has landed.
+        customTheme.applyDirection(config);
+
         animateSvg();
         countDownDate();
         showGuestName();

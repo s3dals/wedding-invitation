@@ -9,6 +9,13 @@ html {
     --theme-background: #ffffff;
     --theme-text: #212529;
     --theme-font: 'Josefin Sans', sans-serif;
+    --theme-font-arabic: 'Noto Naskh Arabic', serif;
+    --theme-divider: #212529;
+
+    /* Label colours, derived from the button colour in custom-theme.js rather
+       than chosen: white on a pale primary is unreadable. */
+    --theme-on-primary: #ffffff;
+    --theme-on-secondary: #ffffff;
 }
 
 body {
@@ -20,6 +27,10 @@ body {
 }
 
 .btn-primary {
+    --bs-btn-color: var(--theme-on-primary);
+    --bs-btn-hover-color: var(--theme-on-primary);
+    --bs-btn-active-color: var(--theme-on-primary);
+    --bs-btn-disabled-color: var(--theme-on-primary);
     --bs-btn-bg: var(--theme-primary);
     --bs-btn-border-color: var(--theme-primary);
     --bs-btn-hover-bg: color-mix(in srgb, var(--theme-primary) 85%, black);
@@ -31,6 +42,10 @@ body {
 }
 
 .btn-secondary {
+    --bs-btn-color: var(--theme-on-secondary);
+    --bs-btn-hover-color: var(--theme-on-secondary);
+    --bs-btn-active-color: var(--theme-on-secondary);
+    --bs-btn-disabled-color: var(--theme-on-secondary);
     --bs-btn-bg: var(--theme-secondary);
     --bs-btn-border-color: var(--theme-secondary);
     --bs-btn-hover-bg: color-mix(in srgb, var(--theme-secondary) 85%, black);

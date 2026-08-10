@@ -60,13 +60,19 @@
             <li class="nav-item">
                 <button class="nav-link" onclick="undangan.admin.navbar.buttonNavInvitation(this)">
                     <i class="fa-solid fa-envelope-open-text"></i>
-                    <span class="d-block" style="font-size: 0.7rem;">Invitations</span>
+                    <span class="d-block" style="font-size: 0.7rem;">Invites</span>
                 </button>
             </li>
             <li class="nav-item">
                 <button class="nav-link" onclick="undangan.admin.navbar.buttonNavText(this)">
                     <i class="fa-solid fa-pen-to-square"></i>
                     <span class="d-block" style="font-size: 0.7rem;">Texts</span>
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" onclick="undangan.admin.navbar.buttonNavStyle(this)">
+                    <i class="fa-solid fa-palette"></i>
+                    <span class="d-block" style="font-size: 0.7rem;">Style</span>
                 </button>
             </li>
             <li class="nav-item">
@@ -110,6 +116,11 @@
                     <li class="nav-item pe-2" role="presentation">
                         <button class="btn-theme-auto nav-link w-100 text-start fw-semibold my-1 rounded-4 shadow-sm" data-bs-toggle="pill" data-bs-target="#pills-text" id="button-text" type="button" role="tab" aria-controls="pills-text" aria-selected="false">
                             <i class="fa-solid fa-pen-to-square ms-3 me-2"></i>Texts
+                        </button>
+                    </li>
+                    <li class="nav-item pe-2" role="presentation">
+                        <button class="btn-theme-auto nav-link w-100 text-start fw-semibold my-1 rounded-4 shadow-sm" data-bs-toggle="pill" data-bs-target="#pills-style" id="button-style" type="button" role="tab" aria-controls="pills-style" aria-selected="false">
+                            <i class="fa-solid fa-palette ms-3 me-2"></i>Style
                         </button>
                     </li>
                     <li class="nav-item pe-2" role="presentation">
@@ -380,6 +391,158 @@
                         </div>
                     </section>
 
+                    <!-- Style -->
+                    <section class="tab-pane fade" id="pills-style" role="tabpanel" tabindex="0">
+
+                        <!-- Theme presets -->
+                        <div class="p-3 bg-theme-auto mb-3 rounded-4 shadow">
+                            <p class="mx-0 mt-0 mb-1 p-0 fw-bold"><i class="fa-solid fa-swatchbook me-2"></i>Theme Presets</p>
+                            <p class="small mb-3" style="opacity:0.75;">Tap one to fill the colours below. You can still change any of them afterwards.</p>
+                            <div class="row g-2" id="themePresets"></div>
+                        </div>
+
+                        <!-- Colours -->
+                        <div class="p-3 bg-theme-auto mb-3 rounded-4 shadow">
+                            <p class="mx-0 mt-0 mb-1 p-0 fw-bold"><i class="fa-solid fa-palette me-2"></i>Colours</p>
+
+                            <div class="form-check form-switch mb-2">
+                                <input class="form-check-input shadow-sm" style="cursor:pointer;" type="checkbox" role="switch" id="enableCustomTheme" onchange="undangan.admin.changeCheckboxValue(this, 'is_custom_theme')" data-offline-disabled="false">
+                                <label class="form-check-label" style="cursor:pointer;" for="enableCustomTheme">Use my own colours</label>
+                            </div>
+                            <p class="small mb-2" style="opacity:0.75;">When enabled, these colours replace the automatic light/dark look for every guest, and the theme-switch button is hidden.</p>
+
+                            <div class="row g-2 mb-2">
+                                <div class="col-3">
+                                    <label class="form-label small mb-1" for="themePrimaryColor">Buttons</label>
+                                    <input type="color" class="form-control form-control-sm form-control-color w-100 rounded-4 shadow-sm" id="themePrimaryColor" data-offline-disabled="false">
+                                </div>
+                                <div class="col-3">
+                                    <label class="form-label small mb-1" for="themeSecondaryColor">Secondary</label>
+                                    <input type="color" class="form-control form-control-sm form-control-color w-100 rounded-4 shadow-sm" id="themeSecondaryColor" data-offline-disabled="false">
+                                </div>
+                                <div class="col-3">
+                                    <label class="form-label small mb-1" for="themeBackgroundColor">Background</label>
+                                    <input type="color" class="form-control form-control-sm form-control-color w-100 rounded-4 shadow-sm" id="themeBackgroundColor" data-offline-disabled="false">
+                                </div>
+                                <div class="col-3">
+                                    <label class="form-label small mb-1" for="themeTextColor">Text</label>
+                                    <input type="color" class="form-control form-control-sm form-control-color w-100 rounded-4 shadow-sm" id="themeTextColor" data-offline-disabled="false">
+                                </div>
+                            </div>
+
+                            <div class="row g-2 align-items-end mb-2">
+                                <div class="col-3">
+                                    <label class="form-label small mb-1" for="themeDividerColor">Dividers</label>
+                                    <input type="color" class="form-control form-control-sm form-control-color w-100 rounded-4 shadow-sm" id="themeDividerColor" data-offline-disabled="false">
+                                </div>
+                                <div class="col-9">
+                                    <button type="button" class="btn btn-sm btn-outline-auto rounded-4 shadow-sm" onclick="undangan.admin.resetDividerColour()" data-offline-disabled="false">Match text colour</button>
+                                </div>
+                            </div>
+
+                            <div id="contrastReport" class="mb-3"></div>
+
+                            <div class="d-flex justify-content-end">
+                                <button type="button" class="btn btn-sm btn-primary rounded-4 shadow-sm" onclick="undangan.admin.changeAppearance(this)" data-offline-disabled="false">Save</button>
+                            </div>
+                        </div>
+
+                        <!-- Fonts -->
+                        <div class="p-3 bg-theme-auto mb-3 rounded-4 shadow">
+                            <p class="mx-0 mt-0 mb-1 p-0 fw-bold"><i class="fa-solid fa-font me-2"></i>Fonts</p>
+                            <p class="small mb-3" style="opacity:0.75;">Two faces, because no single font covers both scripts well. Latin letters use the first, Arabic letters the second.</p>
+
+                            <div class="row g-2 mb-3">
+                                <div class="col-12 col-sm-6">
+                                    <label class="form-label small mb-1" for="themeFont">Latin</label>
+                                    <select class="form-select form-select-sm rounded-4 shadow-sm" id="themeFont" data-offline-disabled="false">
+                                        <option value="default">Default (Josefin Sans)</option>
+                                        <option value="elegant">Elegant (Playfair Display)</option>
+                                        <option value="modern">Modern (Poppins)</option>
+                                        <option value="classic">Classic (Merriweather)</option>
+                                        <option value="script">Script (Great Vibes)</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 col-sm-6">
+                                    <label class="form-label small mb-1" for="themeFontArabic">Arabic</label>
+                                    <select class="form-select form-select-sm rounded-4 shadow-sm" id="themeFontArabic" data-offline-disabled="false">
+                                        <option value="default">Default (device font)</option>
+                                        <option value="naskh">Noto Naskh Arabic</option>
+                                        <option value="amiri">Amiri (classic)</option>
+                                        <option value="cairo">Cairo (modern)</option>
+                                        <option value="tajawal">Tajawal (modern)</option>
+                                        <option value="kufi">Reem Kufi (headings)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-end">
+                                <button type="button" class="btn btn-sm btn-primary rounded-4 shadow-sm" onclick="undangan.admin.changeFonts(this)" data-offline-disabled="false">Save</button>
+                            </div>
+                        </div>
+
+                        <!-- Text direction -->
+                        <div class="p-3 bg-theme-auto mb-3 rounded-4 shadow">
+                            <p class="mx-0 mt-0 mb-1 p-0 fw-bold"><i class="fa-solid fa-right-left me-2"></i>Text Direction</p>
+                            <p class="small mb-3" style="opacity:0.75;">Arabic and Hebrew read right to left, and the whole layout should follow. Auto decides from your own wording.</p>
+
+                            <select class="form-select form-select-sm rounded-4 shadow-sm mb-3" id="themeDirection" data-offline-disabled="false">
+                                <option value="auto">Auto (from my text)</option>
+                                <option value="ltr">Left to right</option>
+                                <option value="rtl">Right to left</option>
+                            </select>
+
+                            <div class="d-flex justify-content-end">
+                                <button type="button" class="btn btn-sm btn-primary rounded-4 shadow-sm" onclick="undangan.admin.changeDirection(this)" data-offline-disabled="false">Save</button>
+                            </div>
+                        </div>
+
+                        <!-- Photos -->
+                        <div class="p-3 bg-theme-auto mb-3 rounded-4 shadow">
+                            <p class="mx-0 mt-0 mb-1 p-0 fw-bold"><i class="fa-solid fa-images me-2"></i>Photos</p>
+                            <p class="small mb-0" style="opacity:0.75;">Not connected yet. Uploading your own cover, couple portraits and gallery needs a storage bucket setting up first &mdash; until then the invitation shows the template&#39;s placeholder pictures.</p>
+                        </div>
+
+                        <!-- Sections -->
+                        <div class="p-3 bg-theme-auto mb-3 rounded-4 shadow">
+                            <p class="mx-0 mt-0 mb-1 p-0 fw-bold"><i class="fa-solid fa-eye me-2"></i>Sections</p>
+                            <p class="small mb-3" style="opacity:0.75;">Turn off anything you are not using and it disappears from the invitation entirely.</p>
+
+                            <div class="form-check form-switch mb-1">
+                                <input class="form-check-input shadow-sm" style="cursor:pointer;" type="checkbox" role="switch" id="showHome" onchange="undangan.admin.changeCheckboxValue(this, 'show_home')" data-offline-disabled="false">
+                                <label class="form-check-label" style="cursor:pointer;" for="showHome">Home / cover</label>
+                            </div>
+                            <div class="form-check form-switch mb-1">
+                                <input class="form-check-input shadow-sm" style="cursor:pointer;" type="checkbox" role="switch" id="showBride" onchange="undangan.admin.changeCheckboxValue(this, 'show_bride')" data-offline-disabled="false">
+                                <label class="form-check-label" style="cursor:pointer;" for="showBride">Couple</label>
+                            </div>
+                            <div class="form-check form-switch mb-1">
+                                <input class="form-check-input shadow-sm" style="cursor:pointer;" type="checkbox" role="switch" id="showWeddingDate" onchange="undangan.admin.changeCheckboxValue(this, 'show_wedding_date')" data-offline-disabled="false">
+                                <label class="form-check-label" style="cursor:pointer;" for="showWeddingDate">Date &amp; venue</label>
+                            </div>
+                            <div class="form-check form-switch mb-1">
+                                <input class="form-check-input shadow-sm" style="cursor:pointer;" type="checkbox" role="switch" id="showStory" onchange="undangan.admin.changeCheckboxValue(this, 'show_story')" data-offline-disabled="false">
+                                <label class="form-check-label" style="cursor:pointer;" for="showStory">Love story</label>
+                            </div>
+                            <div class="form-check form-switch mb-1">
+                                <input class="form-check-input shadow-sm" style="cursor:pointer;" type="checkbox" role="switch" id="showGallery" onchange="undangan.admin.changeCheckboxValue(this, 'show_gallery')" data-offline-disabled="false">
+                                <label class="form-check-label" style="cursor:pointer;" for="showGallery">Gallery</label>
+                            </div>
+                            <div class="form-check form-switch mb-1">
+                                <input class="form-check-input shadow-sm" style="cursor:pointer;" type="checkbox" role="switch" id="showGift" onchange="undangan.admin.changeCheckboxValue(this, 'show_gift')" data-offline-disabled="false">
+                                <label class="form-check-label" style="cursor:pointer;" for="showGift">Love gift</label>
+                            </div>
+                            <div class="form-check form-switch mb-1">
+                                <input class="form-check-input shadow-sm" style="cursor:pointer;" type="checkbox" role="switch" id="showDresscode" onchange="undangan.admin.changeCheckboxValue(this, 'show_dresscode')" data-offline-disabled="false">
+                                <label class="form-check-label" style="cursor:pointer;" for="showDresscode">Dress code</label>
+                            </div>
+                            <div class="form-check form-switch mb-1">
+                                <input class="form-check-input shadow-sm" style="cursor:pointer;" type="checkbox" role="switch" id="showComment" onchange="undangan.admin.changeCheckboxValue(this, 'show_comment')" data-offline-disabled="false">
+                                <label class="form-check-label" style="cursor:pointer;" for="showComment">Wishes</label>
+                            </div>
+                        </div>
+                    </section>
+
                     <!-- Setting -->
                     <section class="tab-pane fade" id="pills-setting" role="tabpanel" tabindex="0">
 
@@ -451,49 +614,6 @@
                             </div>
                         </div>
 
-                        <!-- Appearance -->
-                        <div class="p-3 bg-theme-auto mb-3 rounded-4 shadow">
-                            <p class="mx-0 mt-0 mb-1 p-0 fw-bold"><i class="fa-solid fa-palette me-2"></i>Appearance</p>
-
-                            <div class="form-check form-switch mb-2">
-                                <input class="form-check-input shadow-sm" style="cursor:pointer;" type="checkbox" role="switch" id="enableCustomTheme" onchange="undangan.admin.changeCheckboxValue(this, 'is_custom_theme')" data-offline-disabled="false">
-                                <label class="form-check-label" style="cursor:pointer;" for="enableCustomTheme">Enable custom theme</label>
-                            </div>
-                            <p class="small mb-2" style="opacity:0.75;">When enabled, these colors replace the automatic light/dark look for every visitor, and the theme-switch button is hidden.</p>
-
-                            <div class="row g-2 mb-2">
-                                <div class="col-3">
-                                    <label class="form-label small mb-1" for="themePrimaryColor">Primary</label>
-                                    <input type="color" class="form-control form-control-sm form-control-color w-100 rounded-4 shadow-sm" id="themePrimaryColor" data-offline-disabled="false">
-                                </div>
-                                <div class="col-3">
-                                    <label class="form-label small mb-1" for="themeSecondaryColor">Secondary</label>
-                                    <input type="color" class="form-control form-control-sm form-control-color w-100 rounded-4 shadow-sm" id="themeSecondaryColor" data-offline-disabled="false">
-                                </div>
-                                <div class="col-3">
-                                    <label class="form-label small mb-1" for="themeBackgroundColor">Background</label>
-                                    <input type="color" class="form-control form-control-sm form-control-color w-100 rounded-4 shadow-sm" id="themeBackgroundColor" data-offline-disabled="false">
-                                </div>
-                                <div class="col-3">
-                                    <label class="form-label small mb-1" for="themeTextColor">Text</label>
-                                    <input type="color" class="form-control form-control-sm form-control-color w-100 rounded-4 shadow-sm" id="themeTextColor" data-offline-disabled="false">
-                                </div>
-                            </div>
-
-                            <label class="form-label small mb-1" for="themeFont">Font</label>
-                            <select class="form-select form-select-sm rounded-4 shadow-sm mb-3" id="themeFont" data-offline-disabled="false">
-                                <option value="default">Default (Josefin Sans)</option>
-                                <option value="elegant">Elegant (Playfair Display)</option>
-                                <option value="modern">Modern (Poppins)</option>
-                                <option value="classic">Classic (Merriweather)</option>
-                                <option value="script">Script (Great Vibes)</option>
-                            </select>
-
-                            <div class="d-flex justify-content-end">
-                                <button type="button" class="btn btn-sm btn-primary rounded-4 shadow-sm" onclick="undangan.admin.changeAppearance(this)" data-offline-disabled="false">Save</button>
-                            </div>
-                        </div>
-
                         <!-- Toggle -->
                         <div class="p-3 bg-theme-auto mb-3 rounded-4 shadow">
                             <p class="mx-0 mt-0 mb-1 p-0 fw-bold"><i class="fa-solid fa-sliders me-2"></i>Control</p>
@@ -517,40 +637,6 @@
                             <div class="form-check form-switch mb-1">
                                 <input class="form-check-input shadow-sm" style="cursor:pointer;" type="checkbox" role="switch" id="deleteComment" onchange="undangan.admin.changeCheckboxValue(this, 'can_delete')" data-offline-disabled="false">
                                 <label class="form-check-label" style="cursor:pointer;" for="deleteComment">Can delete</label>
-                            </div>
-                            <hr class="my-3">
-                            <p class="mx-0 mt-0 mb-2 p-0 fw-bold"><i class="fa-solid fa-eye me-2"></i>Invitation Sections</p>
-                            <div class="form-check form-switch mb-1">
-                                <input class="form-check-input shadow-sm" style="cursor:pointer;" type="checkbox" role="switch" id="showHome" onchange="undangan.admin.changeCheckboxValue(this, 'show_home')" data-offline-disabled="false">
-                                <label class="form-check-label" style="cursor:pointer;" for="showHome">Show home / cover</label>
-                            </div>
-                            <div class="form-check form-switch mb-1">
-                                <input class="form-check-input shadow-sm" style="cursor:pointer;" type="checkbox" role="switch" id="showBride" onchange="undangan.admin.changeCheckboxValue(this, 'show_bride')" data-offline-disabled="false">
-                                <label class="form-check-label" style="cursor:pointer;" for="showBride">Show couple section</label>
-                            </div>
-                            <div class="form-check form-switch mb-1">
-                                <input class="form-check-input shadow-sm" style="cursor:pointer;" type="checkbox" role="switch" id="showWeddingDate" onchange="undangan.admin.changeCheckboxValue(this, 'show_wedding_date')" data-offline-disabled="false">
-                                <label class="form-check-label" style="cursor:pointer;" for="showWeddingDate">Show wedding date</label>
-                            </div>
-                            <div class="form-check form-switch mb-1">
-                                <input class="form-check-input shadow-sm" style="cursor:pointer;" type="checkbox" role="switch" id="showGallery" onchange="undangan.admin.changeCheckboxValue(this, 'show_gallery')" data-offline-disabled="false">
-                                <label class="form-check-label" style="cursor:pointer;" for="showGallery">Show gallery</label>
-                            </div>
-                            <div class="form-check form-switch mb-1">
-                                <input class="form-check-input shadow-sm" style="cursor:pointer;" type="checkbox" role="switch" id="showStory" onchange="undangan.admin.changeCheckboxValue(this, 'show_story')" data-offline-disabled="false">
-                                <label class="form-check-label" style="cursor:pointer;" for="showStory">Show love story</label>
-                            </div>
-                            <div class="form-check form-switch mb-1">
-                                <input class="form-check-input shadow-sm" style="cursor:pointer;" type="checkbox" role="switch" id="showGift" onchange="undangan.admin.changeCheckboxValue(this, 'show_gift')" data-offline-disabled="false">
-                                <label class="form-check-label" style="cursor:pointer;" for="showGift">Show love gift</label>
-                            </div>
-                            <div class="form-check form-switch mb-1">
-                                <input class="form-check-input shadow-sm" style="cursor:pointer;" type="checkbox" role="switch" id="showDresscode" onchange="undangan.admin.changeCheckboxValue(this, 'show_dresscode')" data-offline-disabled="false">
-                                <label class="form-check-label" style="cursor:pointer;" for="showDresscode">Show dress code</label>
-                            </div>
-                            <div class="form-check form-switch mb-1">
-                                <input class="form-check-input shadow-sm" style="cursor:pointer;" type="checkbox" role="switch" id="showComment" onchange="undangan.admin.changeCheckboxValue(this, 'show_comment')" data-offline-disabled="false">
-                                <label class="form-check-label" style="cursor:pointer;" for="showComment">Show comments</label>
                             </div>
                         </div>
 
