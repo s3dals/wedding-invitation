@@ -45,14 +45,35 @@ export const guest = (() => {
         const hour = document.getElementById('hour');
         const minute = document.getElementById('minute');
         const second = document.getElementById('second');
+        const spoken = document.getElementById('countdown-text');
 
         const updateCountdown = () => {
             const distance = Math.abs(count - Date.now());
 
-            day.textContent = pad(Math.floor(distance / (1000 * 60 * 60 * 24)));
-            hour.textContent = pad(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
-            minute.textContent = pad(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)));
-            second.textContent = pad(Math.floor((distance % (1000 * 60)) / 1000));
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // The day figure stands alone, so it reads better unpadded - "5",
+            // not "05". The clock keeps its padding, which is what stops the
+            // layout shifting every time a digit narrows.
+            day.textContent = String(days);
+            hour.textContent = pad(hours);
+            minute.textContent = pad(minutes);
+            second.textContent = pad(seconds);
+
+            // The visible countdown carries no words at all, which tells a
+            // screen reader nothing. This sentence is the only place the units
+            // are named, and it stays translatable from the Texts page.
+            if (spoken) {
+                spoken.textContent = [
+                    `${days} ${content.get('countdown_days') ?? 'days'}`,
+                    `${hours} ${content.get('countdown_hours') ?? 'hours'}`,
+                    `${minutes} ${content.get('countdown_minutes') ?? 'minutes'}`,
+                    `${seconds} ${content.get('countdown_seconds') ?? 'seconds'}`,
+                ].join(', ');
+            }
 
             util.timeOut(updateCountdown, 1000 - (Date.now() % 1000));
         };
