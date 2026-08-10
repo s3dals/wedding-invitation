@@ -19,7 +19,10 @@ html {
 }
 
 .font-arabic {
-    font-family: var(--theme-font-arabic) !important;
+    /* Only the two Qur'anic lines carry this class. They need a naskh face with
+       the annotation marks - the modern sans faces draw a missing-glyph box in
+       place of a pause mark. */
+    font-family: var(--theme-font-quran) !important;
 }
 
 .img-center-crop {
