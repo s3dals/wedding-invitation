@@ -10,6 +10,7 @@ html {
     --theme-text: #212529;
     --theme-font: 'Josefin Sans', sans-serif;
     --theme-font-arabic: 'Noto Naskh Arabic', serif;
+    --theme-font-quran: 'Amiri', 'Noto Naskh Arabic', serif;
     --theme-divider: #212529;
 
     /* Label colours, derived from the button colour in custom-theme.js rather

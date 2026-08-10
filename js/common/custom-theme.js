@@ -33,6 +33,19 @@ export const customTheme = (() => {
      */
     const esthetic = { family: 'Sacramento', css: 'https://fonts.googleapis.com/css2?family=Sacramento&display=swap' };
 
+    /**
+     * A safety net for Qur'anic annotation marks (U+06D6-U+06ED) and the
+     * superscript alef, which the modern sans faces simply do not draw: of the
+     * five offered, only Amiri and Noto Naskh Arabic have them. Rendered in
+     * Cairo or Tajawal a pause mark comes out as a missing-glyph box, or as a
+     * full-size letter pair from whatever the device falls back to.
+     *
+     * It is appended after the chosen face, never in front of it, so it only
+     * ever supplies characters that face is missing - the invitation keeps the
+     * look it was given and the verses stop breaking.
+     */
+    const quranic = { family: 'Amiri', css: 'https://fonts.googleapis.com/css2?family=Amiri&display=swap&subset=arabic' };
+
     let active = false;
 
     /**
@@ -113,7 +126,23 @@ export const customTheme = (() => {
     };
 
     /**
-     * @param {Record<string, {family: string, css: string, stack: string}>} table
+     * Injects a font's stylesheet without waiting on the file. Used for the
+     * Qur'anic fallback, which should cost nothing unless a glyph is missing:
+     * declaring the face lets the browser fetch it lazily, whereas
+     * document.fonts.load() below would force the download every time.
+     *
+     * @param {{css: string}} font
+     * @returns {Promise<void>}
+     */
+    const declareFont = (font) => cache('libs').withForceCache().get(font.css).then((uri) => {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = uri;
+        document.head.appendChild(link);
+    });
+
+    /**
+     * @param {Record<string, {family: string, css: string, generic: string}>} table
      * @param {string|null} key
      * @returns {Promise<{family: string, generic: string}|null>}
      */
@@ -155,16 +184,27 @@ export const customTheme = (() => {
         loadFont(fonts, latinKey),
         loadFont(arabicFonts, arabicKey),
         loadFont({ esthetic }, 'esthetic'),
+        declareFont(quranic).catch(() => { }),
     ]).then(([latin, arabic]) => {
         const root = document.documentElement.style;
 
+        // Skipped when it is already the chosen face, so the stack never names
+        // the same family twice.
+        const rescue = arabic && arabic.family !== quranic.family ? [`'${quranic.family}'`] : [];
+
         if (arabic) {
-            root.setProperty('--theme-font-arabic', `'${arabic.family}', ${arabic.generic}`);
+            root.setProperty('--theme-font-arabic', [`'${arabic.family}'`, ...rescue, arabic.generic].join(', '));
         }
+
+        // The .font-arabic class marks the two Qur'anic lines, and nothing else.
+        // Those are set in the naskh face outright rather than borrowing its
+        // marks: a pause mark drawn by one font and positioned against another
+        // font's metrics sits visibly too high.
+        root.setProperty('--theme-font-quran', `'${quranic.family}', serif`);
 
         if (latin || arabic) {
             const families = [latin, arabic].filter(Boolean).map((f) => `'${f.family}'`);
-            root.setProperty('--theme-font', `${families.join(', ')}, ${(latin ?? arabic).generic}`);
+            root.setProperty('--theme-font', [...families, ...rescue, (latin ?? arabic).generic].join(', '));
         }
     });
 
