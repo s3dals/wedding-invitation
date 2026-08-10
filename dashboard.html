@@ -696,6 +696,10 @@
                             <label for="loginPassword" class="form-label my-1"><i class="fa-solid fa-lock me-2"></i>Password</label>
                             <input type="password" class="form-control shadow-sm rounded-4" id="loginPassword" minlength="8" maxlength="20" placeholder="Enter your password" required autocomplete="current-password" data-offline-disabled="false">
                         </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="loginRemember" checked data-offline-disabled="false">
+                            <label class="form-check-label" for="loginRemember">Keep me signed in on this device</label>
+                        </div>
                         <div class="d-grid">
                             <button type="submit" class="btn btn-primary shadow-sm rounded-4" onclick="undangan.admin.auth.login(this)" data-offline-disabled="false"><i class="fa-solid fa-right-to-bracket me-2"></i>Login</button>
                         </div>

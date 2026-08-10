@@ -1082,7 +1082,17 @@ export const admin = (() => {
             window.history.replaceState({}, document.title, window.location.pathname);
         }
 
-        session.isValid() ? getUserStats() : auth.clearSession();
+        if (!session.isValid()) {
+            auth.clearSession();
+            return;
+        }
+
+        getUserStats();
+
+        // Slides the expiry forward on every visit, so a dashboard in regular
+        // use never reaches its own deadline. Deliberately not awaited: the page
+        // is already usable on the token in hand.
+        session.refresh();
     };
 
     /**

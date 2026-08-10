@@ -102,12 +102,14 @@ export const dto = (() => {
     /**
      * @param {string} email
      * @param {string} password
-     * @returns {{email: string, password: string}}
+     * @param {boolean} remember
+     * @returns {{email: string, password: string, remember: boolean}}
      */
-    const postSessionRequest = (email, password) => {
+    const postSessionRequest = (email, password, remember) => {
         return {
             email: email,
             password: password,
+            remember: remember,
         };
     };
 
