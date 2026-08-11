@@ -20,6 +20,19 @@ export const audio = (() => {
         }
 
         /**
+         * data-audio-volume, 0 (silent) to 1 (full). Anything missing or
+         * unparseable keeps full volume, which is what this did before the
+         * attribute existed.
+         *
+         * iOS ignores this: Safari on iPhone and iPad treats volume as
+         * read-only and leaves playback to the hardware buttons. Desktop and
+         * Android honour it.
+         *
+         * @type {number}
+         */
+        const volume = Number.parseFloat(document.body.getAttribute('data-audio-volume'));
+
+        /**
          * @type {HTMLAudioElement|null}
          */
         let audioEl = null;
@@ -29,6 +42,7 @@ export const audio = (() => {
             audioEl.loop = true;
             audioEl.volume = 0.2;
             audioEl.muted = false;
+            audioEl.volume = Number.isFinite(volume) ? Math.min(Math.max(volume, 0), 1) : 1;
             audioEl.autoplay = false;
             audioEl.controls = false;
 
