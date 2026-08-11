@@ -199,3 +199,264 @@ html[dir="rtl"] .end-0 {
     margin-inline-start: 0.3rem;
     opacity: 0.8;
 }
+
+/* ---------- Envelope opening ----------
+   The welcome screen is an addressed envelope: the guest's own name sits on the
+   front, and breaking the wax seal opens the invitation. Every colour is taken
+   from the theme so it follows whatever palette the owner picks - nothing here
+   is a fixed cream-and-gold. */
+.envelope {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    background: var(--theme-background, #fff);
+}
+
+/* Four triangles meeting in the middle, the way a paper envelope folds. Each
+   gets a slightly different shade so the folds read as folds. */
+.envelope-flap {
+    position: absolute;
+    inset: 0;
+    transition: transform 0.75s cubic-bezier(0.6, 0, 0.25, 1), opacity 0.7s ease;
+    will-change: transform, opacity;
+}
+
+.envelope-flap-top {
+    clip-path: polygon(0 0, 100% 0, 50% 50%);
+    background: var(--theme-background);
+}
+
+.envelope-flap-bottom {
+    clip-path: polygon(0 100%, 100% 100%, 50% 50%);
+    background: linear-gradient(0deg, color-mix(in srgb, var(--theme-background) 94%, var(--theme-text)), var(--theme-background));
+}
+
+.envelope-flap-left {
+    clip-path: polygon(0 0, 0 100%, 50% 50%);
+    background: linear-gradient(90deg, color-mix(in srgb, var(--theme-background) 97%, var(--theme-text)), var(--theme-background));
+}
+
+.envelope-flap-right {
+    clip-path: polygon(100% 0, 100% 100%, 50% 50%);
+    background: linear-gradient(270deg, color-mix(in srgb, var(--theme-background) 97%, var(--theme-text)), var(--theme-background));
+}
+
+/* Staggered so the folds peel rather than vanish together. */
+.envelope-open .envelope-flap-top {
+    transform: translateY(-115%) rotate(-2deg);
+    opacity: 0;
+    transition-delay: 0.02s;
+}
+
+.envelope-open .envelope-flap-left {
+    transform: translateX(-115%) rotate(1deg);
+    opacity: 0;
+    transition-delay: 0.09s;
+}
+
+.envelope-open .envelope-flap-right {
+    transform: translateX(115%) rotate(-1deg);
+    opacity: 0;
+    transition-delay: 0.16s;
+}
+
+.envelope-open .envelope-flap-bottom {
+    transform: translateY(115%) rotate(2deg);
+    opacity: 0;
+    transition-delay: 0.23s;
+}
+
+/* The address panel and the seal ride above the flaps and leave with them. */
+.envelope-face {
+    position: relative;
+    z-index: 5;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 8vh 8vw;
+    gap: 0.35rem;
+    transition: opacity 0.4s ease, transform 0.5s ease;
+}
+
+.envelope-open .envelope-face {
+    opacity: 0;
+    transform: scale(0.97);
+}
+
+.envelope-seal {
+    position: relative;
+    width: min(30vw, 132px);
+    height: min(30vw, 132px);
+    margin: 1.6rem 0 1.1rem;
+    border: 0;
+    padding: 0;
+    border-radius: 50%;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    /* Wax takes the accent colour, so the seal is the couple's own colour. */
+    background:
+        radial-gradient(circle at 34% 26%,
+            color-mix(in srgb, var(--theme-primary) 70%, var(--theme-background)) 0%,
+            color-mix(in srgb, var(--theme-primary) 92%, var(--theme-background)) 30%,
+            var(--theme-primary) 58%,
+            color-mix(in srgb, var(--theme-primary) 78%, var(--theme-text)) 88%,
+            color-mix(in srgb, var(--theme-primary) 64%, var(--theme-text)) 100%);
+    box-shadow:
+        0 1px 2px color-mix(in srgb, var(--theme-text) 12%, transparent),
+        0 12px 26px -6px color-mix(in srgb, var(--theme-text) 32%, transparent),
+        inset 0 3px 5px color-mix(in srgb, var(--theme-background) 45%, transparent),
+        inset 0 -8px 14px color-mix(in srgb, var(--theme-text) 26%, transparent),
+        inset 0 0 0 1px color-mix(in srgb, var(--theme-text) 10%, transparent);
+    transition: transform 0.55s cubic-bezier(0.6, 0, 0.25, 1), opacity 0.45s ease;
+}
+
+/* Wax does not pour into a perfect circle. */
+.envelope-seal::before {
+    content: "";
+    position: absolute;
+    inset: -5%;
+    border-radius: 47% 53% 51% 49% / 52% 48% 52% 48%;
+    background: inherit;
+    opacity: 0.85;
+    z-index: -1;
+}
+
+.envelope-seal:focus-visible {
+    outline: 2px solid var(--theme-text);
+    outline-offset: 6px;
+}
+
+.envelope-seal .envelope-seal-ring {
+    position: absolute;
+    inset: 10%;
+    border-radius: 50%;
+    /* on-primary is already the readable colour for this background. */
+    border: 1px dashed color-mix(in srgb, var(--theme-on-primary) 45%, transparent);
+}
+
+.envelope-seal .envelope-seal-monogram {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--theme-on-primary);
+    font-size: min(9vw, 2.6rem);
+    line-height: 1;
+    opacity: 0.92;
+    pointer-events: none;
+}
+
+.envelope-open .envelope-seal {
+    transform: scale(0.35) rotate(12deg);
+    opacity: 0;
+}
+
+.envelope-breaking .envelope-seal {
+    animation: envelope-jitter 0.32s ease;
+}
+
+.envelope-crack {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    pointer-events: none;
+    color: color-mix(in srgb, var(--theme-on-primary) 70%, transparent);
+}
+
+.envelope-breaking .envelope-crack {
+    animation: envelope-crack 0.32s ease forwards;
+}
+
+@keyframes envelope-jitter {
+    0% { transform: translate(0, 0) rotate(0); }
+    20% { transform: translate(-1.5px, 1px) rotate(-1deg); }
+    40% { transform: translate(1.5px, -1px) rotate(1deg); }
+    60% { transform: translate(-1px, -1px) rotate(-0.5deg); }
+    80% { transform: translate(1px, 1px) rotate(0.5deg); }
+    100% { transform: translate(0, 0) rotate(0); }
+}
+
+@keyframes envelope-crack {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+.envelope-prompt {
+    font-size: 0.68rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--theme-text) 70%, transparent);
+    animation: envelope-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes envelope-pulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
+
+.envelope-eyebrow {
+    font-size: 0.72rem;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--theme-text) 65%, transparent);
+}
+
+.envelope-rule {
+    width: 3.5rem;
+    height: 1px;
+    margin: 1.1rem 0;
+    background: linear-gradient(90deg, transparent, var(--theme-divider, var(--theme-text)), transparent);
+    opacity: 0.6;
+}
+
+.envelope-skip {
+    position: absolute;
+    z-index: 6;
+    top: max(1rem, env(safe-area-inset-top));
+    inset-inline-end: max(1rem, env(safe-area-inset-right));
+    background: none;
+    border: 0;
+    font-size: 0.65rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--theme-text) 65%, transparent);
+    cursor: pointer;
+    padding: 0.5rem;
+    transition: opacity 0.3s ease, color 0.3s ease;
+}
+
+.envelope-skip:hover,
+.envelope-skip:focus-visible {
+    color: var(--theme-text);
+}
+
+.envelope-open .envelope-skip {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* The whole point of the animation is the flourish; without it, just leave. */
+@media (prefers-reduced-motion: reduce) {
+    .envelope-flap,
+    .envelope-seal,
+    .envelope-face,
+    .envelope-prompt,
+    .envelope-skip {
+        transition: none !important;
+        animation: none !important;
+    }
+}
+
+/* Uppercase and wide letter-spacing are Latin typographic habits; Arabic is
+   cursive and joins, so both would damage it. */
+html[dir="rtl"] .envelope-prompt,
+html[dir="rtl"] .envelope-eyebrow,
+html[dir="rtl"] .envelope-skip {
+    text-transform: none;
+    letter-spacing: normal;
+    font-size: 0.8rem;
+}

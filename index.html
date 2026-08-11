@@ -505,7 +505,7 @@
           </div>
 
           <!-- Firman Allah Subhanahu Wa Ta'ala -->
-          <section class= pt-2 pb-4">
+          <section class="pt-2 pb-4">
             <div class="container text-center">
               <h2
                 class="font-esthetic pt-2 pb-1 m-0"
@@ -1679,34 +1679,39 @@
       </div>
     </div>
 
-    <!-- Welcome Page -->
-    <div class="loading-page bg-white-black" id="welcome" style="opacity: 0">
-      <div
-        class="d-flex justify-content-center align-items-center vh-100 overflow-y-auto"
-      >
-        <div class="d-flex flex-column text-center">
-          <h2
-            class="font-esthetic mb-4"
-            style="font-size: 2.25rem"
-            data-content="welcome_heading"
-          >
+    <!-- The welcome screen is a sealed envelope, addressed to whoever opened -->
+    <!-- the link. Breaking the wax opens the invitation - there is no second step. -->
+    <div class="loading-page" id="welcome" style="opacity: 0">
+      <div class="envelope" id="envelope">
+        <div class="envelope-flap envelope-flap-top"></div>
+        <div class="envelope-flap envelope-flap-left"></div>
+        <div class="envelope-flap envelope-flap-right"></div>
+        <div class="envelope-flap envelope-flap-bottom"></div>
+
+        <button
+          type="button"
+          class="envelope-skip"
+          id="envelope-skip"
+          onclick="undangan.guest.open(this)"
+          data-content="envelope_skip"
+        >
+          Skip
+        </button>
+
+        <div class="envelope-face">
+          <p class="envelope-eyebrow m-0" data-content="welcome_heading">
             The Wedding Of
-          </h2>
-
-          <img
-            src="./assets/images/placeholder.webp"
-            data-src="./assets/images/bg.webp"
-            alt="background"
-            class="img-center-crop rounded-circle border border-3 border-light shadow mb-4 mx-auto"
-          />
-
+          </p>
           <h2
-            class="font-esthetic mb-4"
-            style="font-size: 2.25rem"
+            class="font-esthetic m-0"
+            style="font-size: 2.5rem"
             data-content="couple_display"
           >
             Wahyu &amp; Riski
           </h2>
+
+          <div class="envelope-rule"></div>
+
           <div
             id="guest-name"
             data-message="To the Honorable Mr./Mrs./Brother/Sister"
@@ -1715,12 +1720,39 @@
 
           <button
             type="button"
-            class="btn btn-light shadow rounded-4 mt-3 mx-auto"
-            onclick="undangan.guest.open(this)"
+            class="envelope-seal"
+            id="envelope-seal"
+            onclick="undangan.guest.breakSeal(this)"
+            aria-label="Break the seal to open the invitation"
           >
-            <i class="fa-solid fa-envelope-open fa-bounce me-2"></i
-            ><span data-content="open_button">Open Invitation</span>
+            <span class="envelope-seal-ring"></span>
+            <span
+              class="envelope-seal-monogram font-esthetic"
+              data-content="envelope_monogram"
+              >S &amp; A</span
+            >
+            <svg
+              class="envelope-crack"
+              viewBox="0 0 150 150"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M75 20 L68 55 L82 62 L60 90 L78 96 L55 130"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+              <path
+                d="M75 20 L95 48 L80 60"
+                stroke="currentColor"
+                stroke-width="1.6"
+              />
+            </svg>
           </button>
+
+          <p class="envelope-prompt m-0" data-content="envelope_prompt">
+            Tap the seal to open
+          </p>
         </div>
       </div>
     </div>

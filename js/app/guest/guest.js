@@ -195,7 +195,10 @@ export const guest = (() => {
      * @returns {void}
      */
     const open = (button) => {
-        button.disabled = true;
+        if (button) {
+            button.disabled = true;
+        }
+
         document.body.scrollIntoView({ behavior: 'instant' });
         document.getElementById('root').classList.remove('opacity-0');
 
@@ -211,6 +214,34 @@ export const guest = (() => {
 
         document.dispatchEvent(new Event('undangan.open'));
         util.changeOpacity(document.getElementById('welcome'), false).then((el) => el.remove());
+    };
+
+    /**
+     * Breaks the wax, then peels the four flaps away and opens the invitation
+     * underneath.
+     *
+     * The timings match the CSS: the seal jitters and cracks for 320ms, the
+     * flaps take 750ms plus a 230ms stagger. open() runs once the flaps are
+     * clear, so the confetti and the music land on the invitation rather than
+     * on an envelope that is still closing.
+     *
+     * @param {HTMLButtonElement} button
+     * @returns {void}
+     */
+    const breakSeal = (button) => {
+        button.disabled = true;
+
+        const envelope = document.getElementById('envelope');
+
+        // Whoever asked not to be moved gets the invitation, not the theatre.
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            open(null);
+            return;
+        }
+
+        envelope.classList.add('envelope-breaking');
+        util.timeOut(() => envelope.classList.add('envelope-open'), 320);
+        util.timeOut(() => open(null), 1120);
     };
 
     /**
@@ -525,6 +556,7 @@ export const guest = (() => {
             comment,
             guest: {
                 open,
+            breakSeal,
                 modal,
                 showStory,
                 closeInformation,
