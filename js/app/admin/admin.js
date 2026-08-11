@@ -11,7 +11,7 @@ import { session } from '../../common/session.js';
 import { customTheme } from '../../common/custom-theme.js';
 import { offline } from '../../common/offline.js';
 import { comment } from '../components/comment.js';
-import { pool, request, HTTP_GET, HTTP_PATCH, HTTP_PUT, HTTP_POST, HTTP_DELETE } from '../../connection/request.js';
+import { pool, request, HTTP_GET, HTTP_PATCH, HTTP_PUT, HTTP_POST, HTTP_DELETE, HTTP_STATUS_OK } from '../../connection/request.js';
 
 export const admin = (() => {
 
@@ -639,6 +639,146 @@ export const admin = (() => {
     };
 
     /**
+     * Shrinks the picture in the browser before it is ever sent.
+     *
+     * A photo straight off a phone is several megabytes, and the API runs behind
+     * a 4.5 MB request-body ceiling - so this is what makes "just pick a photo"
+     * work rather than fail on the way out. webp at 1400px long edge lands at a
+     * few hundred kB for a photograph.
+     *
+     * @param {File} file
+     * @returns {Promise<{data: string, type: string, bytes: number}>}
+     */
+    const shrinkImage = (file) => new Promise((resolve, reject) => {
+        const url = URL.createObjectURL(file);
+        const img = new Image();
+
+        img.onerror = () => {
+            URL.revokeObjectURL(url);
+            reject(new Error('That file could not be read as an image.'));
+        };
+
+        img.onload = () => {
+            URL.revokeObjectURL(url);
+
+            const longest = Math.max(img.naturalWidth, img.naturalHeight);
+            const scale = longest > 1400 ? 1400 / longest : 1;
+
+            const canvas = document.createElement('canvas');
+            canvas.width = Math.round(img.naturalWidth * scale);
+            canvas.height = Math.round(img.naturalHeight * scale);
+            canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+
+            canvas.toBlob((blob) => {
+                if (!blob) {
+                    reject(new Error('The image could not be converted.'));
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onerror = () => reject(new Error('The image could not be read back.'));
+                reader.onload = () => resolve({
+                    // Strip the "data:image/webp;base64," prefix; the API stores
+                    // the payload and the type separately.
+                    data: String(reader.result).split(',')[1],
+                    type: blob.type,
+                    bytes: blob.size,
+                });
+                reader.readAsDataURL(blob);
+            }, 'image/webp', 0.82);
+        };
+
+        img.src = url;
+    });
+
+    /**
+     * @param {string|null} version
+     * @returns {void}
+     */
+    const showCouplePhoto = (version) => {
+        const preview = document.getElementById('couplePhotoPreview');
+        const remove = document.getElementById('couplePhotoRemove');
+
+        if (!version) {
+            preview.classList.add('d-none');
+            preview.removeAttribute('src');
+            remove.classList.add('d-none');
+            return;
+        }
+
+        const url = new URL('api/v2/photo', document.body.getAttribute('data-url'));
+        url.searchParams.set('key', document.getElementById('dashboard-accesskey').value);
+        url.searchParams.set('v', version);
+
+        preview.src = url.toString();
+        preview.classList.remove('d-none');
+        remove.classList.remove('d-none');
+    };
+
+    /**
+     * @param {HTMLInputElement} input
+     * @returns {Promise<void>}
+     */
+    const uploadCouplePhoto = async (input) => {
+        const file = input.files?.[0];
+        if (!file) {
+            return;
+        }
+
+        const hint = document.getElementById('couplePhotoHint');
+        hint.textContent = 'Preparing the photo...';
+        input.disabled = true;
+
+        try {
+            const image = await shrinkImage(file);
+            hint.textContent = `Uploading ${Math.round(image.bytes / 1024)} kB...`;
+
+            const res = await request(HTTP_POST, '/api/photo')
+                .token(session.getToken())
+                .body({ data: image.data, type: image.type })
+                .send();
+
+            if (res.code !== HTTP_STATUS_OK) {
+                throw new Error(res.error?.[0] ?? 'The upload was refused.');
+            }
+
+            showCouplePhoto(res.data.version);
+            hint.textContent = 'Saved. Guests will see it straight away.';
+        } catch (err) {
+            hint.textContent = err.message;
+            util.notify(err.message).error();
+        } finally {
+            input.disabled = false;
+            input.value = '';
+        }
+    };
+
+    /**
+     * @param {HTMLButtonElement} button
+     * @returns {Promise<void>}
+     */
+    const removeCouplePhoto = async (button) => {
+        const btn = util.disableButton(button);
+        const hint = document.getElementById('couplePhotoHint');
+
+        try {
+            const res = await request(HTTP_DELETE, '/api/photo').token(session.getToken()).send();
+
+            if (res.code !== HTTP_STATUS_OK) {
+                throw new Error(res.error?.[0] ?? 'The photo could not be removed.');
+            }
+
+            showCouplePhoto(null);
+            hint.textContent = 'Removed.';
+        } catch (err) {
+            hint.textContent = err.message;
+            util.notify(err.message).error();
+        } finally {
+            btn.restore();
+        }
+    };
+
+    /**
      * @returns {Promise<void>}
      */
     const getUserStats = () => auth.getDetailUser().then((res) => {
@@ -674,6 +814,10 @@ export const admin = (() => {
         document.getElementById('themeDirection').value = res.data.theme_direction || 'auto';
         // No stored divider colour means it follows the text colour.
         document.getElementById('themeDividerColor').value = res.data.theme_divider_color || res.data.theme_text_color || '#212529';
+
+        // Only the version travels in this response; the image itself is fetched
+        // from its own cacheable URL.
+        showCouplePhoto(res.data.photo_couple_version);
 
         renderThemePresets();
         renderContrastReport();
@@ -1132,6 +1276,8 @@ export const admin = (() => {
                 changeFonts,
                 changeDirection,
                 resetDividerColour,
+                uploadCouplePhoto,
+                removeCouplePhoto,
                 changeRsvpDeadline,
                 saveContent,
                 addGuest,

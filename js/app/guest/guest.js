@@ -10,6 +10,7 @@ import { loader } from '../../libs/loader.js';
 import { theme } from '../../common/theme.js';
 import { lang } from '../../common/language.js';
 import { customTheme } from '../../common/custom-theme.js';
+import { couplePhoto } from '../../common/couple-photo.js';
 import { storage } from '../../common/storage.js';
 import { session } from '../../common/session.js';
 import { offline } from '../../common/offline.js';
@@ -378,6 +379,9 @@ export const guest = (() => {
         // After content.apply(): "auto" direction reads the invitation's own
         // words, which are only in the DOM once the stored text has landed.
         customTheme.applyDirection(config);
+
+        // Only reads config, so it can run alongside the rest of the boot.
+        couplePhoto.apply(config);
 
         animateSvg();
         countDownDate();

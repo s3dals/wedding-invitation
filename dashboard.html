@@ -399,6 +399,20 @@
                     <!-- Style -->
                     <section class="tab-pane fade" id="pills-style" role="tabpanel" tabindex="0">
 
+                        <!-- Couple photo -->
+                        <div class="p-3 bg-theme-auto mb-3 rounded-4 shadow">
+                            <p class="mx-0 mt-0 mb-1 p-0 fw-bold"><i class="fa-solid fa-image me-2"></i>Couple Photo</p>
+                            <p class="small mb-3" style="opacity:0.75;">One picture of the two of you, shown above your names. It is shrunk on this device before it is sent, so a photo straight from your camera is fine.</p>
+
+                            <img id="couplePhotoPreview" alt="" class="d-none img-fluid rounded-4 shadow-sm mb-3 mx-auto d-block" style="max-width: min(100%, 18rem);">
+
+                            <div class="d-grid gap-2">
+                                <input class="form-control form-control-sm rounded-4 shadow-sm" type="file" id="couplePhotoFile" accept="image/jpeg,image/png,image/webp" onchange="undangan.admin.uploadCouplePhoto(this)" data-offline-disabled="false">
+                                <button type="button" class="btn btn-sm btn-outline-danger rounded-4 shadow-sm d-none" id="couplePhotoRemove" onclick="undangan.admin.removeCouplePhoto(this)" data-offline-disabled="false"><i class="fa-solid fa-trash me-2"></i>Remove photo</button>
+                            </div>
+                            <p class="small mt-2 mb-0" id="couplePhotoHint" style="opacity:0.75;"></p>
+                        </div>
+
                         <!-- Theme presets -->
                         <div class="p-3 bg-theme-auto mb-3 rounded-4 shadow">
                             <p class="mx-0 mt-0 mb-1 p-0 fw-bold"><i class="fa-solid fa-swatchbook me-2"></i>Theme Presets</p>

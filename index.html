@@ -168,6 +168,13 @@
                     <h2 class="font-esthetic py-4 m-0" style="font-size: 2rem;" data-content="greeting_open">Assalamualaikum Warahmatullahi Wabarakatuh</h2>
                     <p class="pb-4 px-2 m-0" style="font-size: 0.95rem;" data-content="invite_line">With great respect, we invite you to attend our wedding ceremony:</p>
 
+                    <!-- The one photo of the couple. Stays hidden until the API says one has -->
+                    <!-- been uploaded, so an invitation without a picture shows no empty frame. -->
+                    <!-- It carries the placeholder like every other image here on purpose: the -->
+                    <!-- loader counts every <img>, and one with no src reports complete with a -->
+                    <!-- zero natural width, which it treats as a failure and stalls on. -->
+                    <img id="photo-couple" src="./assets/images/placeholder.webp" alt="" class="d-none img-fluid rounded-4 shadow mb-4 mx-auto cursor-pointer" style="max-width: min(100%, 22rem);" onclick="undangan.guest.modal(this)">
+
                     <div class="overflow-hidden pb-4">
 
                         <div class="position-relative">
