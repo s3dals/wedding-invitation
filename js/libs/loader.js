@@ -1,40 +1,39 @@
-import { cache } from '../connection/cache.js';
-
 /**
- * @param {ReturnType<typeof cache>} c
+ * @param {string} css
  * @returns {Promise<void>}
  */
-const loadAOS = (c) => {
+const linkStylesheet = (css) => new Promise((res, rej) => {
+    const link = document.createElement('link');
+    link.onload = res;
+    link.onerror = rej;
+
+    link.rel = 'stylesheet';
+    link.href = css;
+    document.head.appendChild(link);
+});
+
+/**
+ * @param {string} src
+ * @returns {Promise<void>}
+ */
+const loadScript = (src) => new Promise((res, rej) => {
+    const sc = document.createElement('script');
+    sc.onload = res;
+    sc.onerror = rej;
+
+    sc.src = src;
+    document.head.appendChild(sc);
+});
+
+/**
+ * @returns {Promise<void>}
+ */
+const loadAOS = () => {
 
     const urlCss = './assets/libs/aos/aos.css';
     const urlJs = './assets/libs/aos/aos.js';
 
-    /**
-     * @returns {Promise<void>}
-     */
-    const loadCss = () => c.get(urlCss).then((uri) => new Promise((res, rej) => {
-        const link = document.createElement('link');
-        link.onload = res;
-        link.onerror = rej;
-
-        link.rel = 'stylesheet';
-        link.href = uri;
-        document.head.appendChild(link);
-    }));
-
-    /**
-     * @returns {Promise<void>}
-     */
-    const loadJs = () => c.get(urlJs).then((uri) => new Promise((res, rej) => {
-        const sc = document.createElement('script');
-        sc.onload = res;
-        sc.onerror = rej;
-
-        sc.src = uri;
-        document.head.appendChild(sc);
-    }));
-
-    return Promise.all([loadCss(), loadJs()]).then(() => {
+    return Promise.all([linkStylesheet(urlCss), loadScript(urlJs)]).then(() => {
         if (typeof window.AOS === 'undefined') {
             throw new Error('AOS library failed to load');
         }
@@ -44,29 +43,27 @@ const loadAOS = (c) => {
 };
 
 /**
- * @param {ReturnType<typeof cache>} c
  * @returns {Promise<void>}
  */
-const loadConfetti = (c) => {
+const loadConfetti = () => {
     const url = './assets/libs/confetti/confetti.browser.js';
 
-    return c.get(url).then((uri) => new Promise((res, rej) => {
-        const sc = document.createElement('script');
-        sc.onerror = rej;
-        sc.onload = () => {
-            typeof window.confetti === 'undefined' ? rej(new Error('Confetti library failed to load')) : res();
-        };
-
-        sc.src = uri;
-        document.head.appendChild(sc);
-    }));
+    return loadScript(url).then(() => {
+        if (typeof window.confetti === 'undefined') {
+            throw new Error('Confetti library failed to load');
+        }
+    });
 };
 
 /**
- * @param {ReturnType<typeof cache>} c
+ * Loads the decorative and Qur'anic fallback fonts. The CSS files are served
+ * from the same origin now, so they are linked directly rather than through
+ * the blob-URL cache: fonts served from a blob: URL hit a CORS wall in the
+ * browser and fail with "A network error occurred".
+ *
  * @returns {Promise<void>}
  */
-const loadAdditionalFont = (c) => {
+const loadAdditionalFont = () => {
 
     const fonts = [
         { css: './assets/fonts/sacramento.css', family: 'Sacramento' },
@@ -74,18 +71,11 @@ const loadAdditionalFont = (c) => {
     ];
 
     /**
-     * @param {object}
+     * @param {{css: string, family: string}} font
      * @returns {Promise<void>}
      */
-    const loadFont = ({ css, family }) => c.get(css).then((uri) => new Promise((res, rej) => {
-        const link = document.createElement('link');
-        link.onload = res;
-        link.onerror = rej;
-
-        link.rel = 'stylesheet';
-        link.href = uri;
-        document.head.appendChild(link);
-    })).then(() => document.fonts.load(`1em "${family}"`));
+    const loadFont = ({ css, family }) => linkStylesheet(css)
+        .then(() => document.fonts.load(`1em "${family}"`));
 
     return Promise.all(fonts.map(loadFont));
 };
@@ -99,18 +89,17 @@ const loadAdditionalFont = (c) => {
  */
 export const loader = (opt = {}) => {
     const promises = [];
-    const c = cache('libs').withForceCache();
 
     if (opt?.aos ?? true) {
-        promises.push(loadAOS(c).catch((err) => console.warn('AOS failed to load (non-critical):', err)));
+        promises.push(loadAOS().catch((err) => console.warn('AOS failed to load (non-critical):', err)));
     }
 
     if (opt?.confetti ?? true) {
-        promises.push(loadConfetti(c).catch((err) => console.warn('Confetti failed to load (non-critical):', err)));
+        promises.push(loadConfetti().catch((err) => console.warn('Confetti failed to load (non-critical):', err)));
     }
 
     if (opt?.additionalFont ?? true) {
-        promises.push(loadAdditionalFont(c));
+        promises.push(loadAdditionalFont());
     }
 
     return Promise.all(promises);

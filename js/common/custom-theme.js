@@ -1,5 +1,3 @@
-import { cache } from '../connection/cache.js';
-
 export const customTheme = (() => {
 
     /**
@@ -131,15 +129,21 @@ export const customTheme = (() => {
      * declaring the face lets the browser fetch it lazily, whereas
      * document.fonts.load() below would force the download every time.
      *
+     * The CSS files are same-origin now, so they are linked directly rather
+     * than through the blob-URL cache: fonts served from a blob: URL hit a
+     * CORS wall and fail with "A network error occurred".
+     *
      * @param {{css: string}} font
      * @returns {Promise<void>}
      */
-    const declareFont = (font) => cache('libs').withForceCache().get(font.css).then((uri) => {
+    const declareFont = (font) => {
         const link = document.createElement('link');
         link.rel = 'stylesheet';
-        link.href = uri;
+        link.href = font.css;
         document.head.appendChild(link);
-    });
+
+        return Promise.resolve();
+    };
 
     /**
      * @param {Record<string, {family: string, css: string, generic: string}>} table
@@ -152,17 +156,15 @@ export const customTheme = (() => {
             return Promise.resolve(null);
         }
 
-        const c = cache('libs').withForceCache();
-
-        return c.get(font.css).then((uri) => new Promise((res, rej) => {
+        return new Promise((res, rej) => {
             const link = document.createElement('link');
             link.onload = res;
             link.onerror = rej;
 
             link.rel = 'stylesheet';
-            link.href = uri;
+            link.href = font.css;
             document.head.appendChild(link);
-        })).then(() => document.fonts.load(`1em "${font.family}"`)).then(() => font);
+        }).then(() => document.fonts.load(`1em "${font.family}"`)).then(() => font);
     };
 
     /**
