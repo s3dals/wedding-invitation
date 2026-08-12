@@ -267,18 +267,30 @@ html[dir="rtl"] .end-0 {
 }
 
 /* The address panel and the seal ride above the flaps and leave with them. */
+/* Three rows put the middle one - the seal - on the point where the four folds
+   converge. minmax(0, 1fr) rather than 1fr: a plain 1fr is minmax(auto, 1fr), so
+   a tall address block grows the first row and shoves the seal down the screen.
+   Forcing the outer rows equal keeps the wax centred however much text sits
+   above it, and in whatever order. */
 .envelope-face {
     position: relative;
     z-index: 5;
     height: 100%;
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto minmax(0, 1fr);
+    justify-items: center;
+    text-align: center;
+    padding: 6vh 8vw;
+    transition: opacity 0.4s ease, transform 0.5s ease;
+}
+
+.envelope-address {
+    align-self: end;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 8vh 8vw;
     gap: 0.35rem;
-    transition: opacity 0.4s ease, transform 0.5s ease;
+    padding-bottom: 1.6rem;
 }
 
 .envelope-open .envelope-face {
@@ -290,7 +302,6 @@ html[dir="rtl"] .end-0 {
     position: relative;
     width: min(30vw, 132px);
     height: min(30vw, 132px);
-    margin: 1.6rem 0 1.1rem;
     border: 0;
     padding: 0;
     border-radius: 50%;
@@ -386,6 +397,8 @@ html[dir="rtl"] .end-0 {
 }
 
 .envelope-prompt {
+    align-self: start;
+    padding-top: 1.4rem;
     font-size: 0.68rem;
     letter-spacing: 0.3em;
     text-transform: uppercase;
