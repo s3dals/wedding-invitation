@@ -74,13 +74,6 @@
       href="./assets/images/icon-192x192.png"
     />
 
-    <!-- Preconnect CDN -->
-    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
-    <link
-      rel="preconnect"
-      href="https://cdn.jsdelivr.net"
-      crossorigin="anonymous"
-    />
 
     <!-- Preload Resources -->
     <link
@@ -90,23 +83,17 @@
     />
     <link
       rel="preload"
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-      integrity="sha256-2FMn2Zx6PuH5tdBQDRNwrOo60ts5wWPC9R8jK67b3t4="
-      crossorigin="anonymous"
+      href="./assets/libs/bootstrap/css/bootstrap.min.css"
       as="style"
     />
     <link
       rel="preload"
-      href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"
-      integrity="sha256-4rTIfo5GQTi/7UJqoyUJQKzxW8VN/YBH31+Cy+vTZj4="
-      crossorigin="anonymous"
+      href="./assets/libs/fontawesome/css/all.min.css"
       as="style"
     />
     <link
       rel="preload"
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-      integrity="sha256-5P1JGBOIxI7FBAvT/mb1fCnI5n/NhQKzNUuW7Hq0fMc="
-      crossorigin="anonymous"
+      href="./assets/libs/bootstrap/js/bootstrap.bundle.min.js"
       as="script"
     />
 
@@ -119,24 +106,18 @@
     <!-- Dependencies CSS -->
     <link
       rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-      integrity="sha256-2FMn2Zx6PuH5tdBQDRNwrOo60ts5wWPC9R8jK67b3t4="
-      crossorigin="anonymous"
+      href="./assets/libs/bootstrap/css/bootstrap.min.css"
     />
     <link
       rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"
-      integrity="sha256-4rTIfo5GQTi/7UJqoyUJQKzxW8VN/YBH31+Cy+vTZj4="
-      crossorigin="anonymous"
+      href="./assets/libs/fontawesome/css/all.min.css"
     />
     <link rel="stylesheet" href="./css/guest.css" />
 
     <!-- Dependencies JS -->
     <script
       defer
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-      integrity="sha256-5P1JGBOIxI7FBAvT/mb1fCnI5n/NhQKzNUuW7Hq0fMc="
-      crossorigin="anonymous"
+      src="./assets/libs/bootstrap/js/bootstrap.bundle.min.js"
     ></script>
     <script src="./dist/guest.js"></script>
   </head>
@@ -184,13 +165,13 @@
           <div class="d-flex position-absolute w-100 h-100">
             <!-- <div class="position-relative overflow-hidden vw-100">
                         <div class="position-absolute h-100 w-100 slide-desktop" style="opacity: 0;">
-                            <img src="./assets/images/placeholder.webp" data-src="https://picsum.photos/1000/1000?random=7" alt="bg" class="bg-cover-home" style="mask-image: none; opacity: 30%;">
+                            <img src="./assets/images/placeholder.webp" data-src="./assets/images/placeholder.webp" alt="bg" class="bg-cover-home" style="mask-image: none; opacity: 30%;">
                         </div>
                         <div class="position-absolute h-100 w-100 slide-desktop" style="opacity: 0;">
-                            <img src="./assets/images/placeholder.webp" data-src="https://picsum.photos/1000/1000?random=8" alt="bg" class="bg-cover-home" style="mask-image: none; opacity: 30%;">
+                            <img src="./assets/images/placeholder.webp" data-src="./assets/images/placeholder.webp" alt="bg" class="bg-cover-home" style="mask-image: none; opacity: 30%;">
                         </div>
                         <div class="position-absolute h-100 w-100 slide-desktop" style="opacity: 0;">
-                            <img src="./assets/images/placeholder.webp" data-src="https://picsum.photos/1000/1000?random=9" alt="bg" class="bg-cover-home" style="mask-image: none; opacity: 30%;">
+                            <img src="./assets/images/placeholder.webp" data-src="./assets/images/placeholder.webp" alt="bg" class="bg-cover-home" style="mask-image: none; opacity: 30%;">
                         </div>
                     </div> -->
           </div>
@@ -275,7 +256,7 @@
                 class="btn btn-outline-auto btn-sm shadow rounded-pill px-3 py-1"
                 style="font-size: 0.825rem"
               >
-                <i class="fa-solid fa-calendar-check me-2"></i>Save Google
+                <i class="fa-solid fa-calendar-check me-2"></i>Add to
                 Calendar
               </button>
 
@@ -961,7 +942,7 @@
                     <div class="carousel-item active">
                       <img
                         src="./assets/images/placeholder.webp"
-                        data-src="https://picsum.photos/1280/720?random=1"
+                        data-src="./assets/images/placeholder.webp"
                         alt="image 1"
                         class="d-block img-fluid cursor-pointer"
                         onclick="undangan.guest.modal(this)"
@@ -970,7 +951,7 @@
                     <div class="carousel-item">
                       <img
                         src="./assets/images/placeholder.webp"
-                        data-src="https://picsum.photos/1280/720?random=2"
+                        data-src="./assets/images/placeholder.webp"
                         alt="image 2"
                         class="d-block img-fluid cursor-pointer"
                         onclick="undangan.guest.modal(this)"
@@ -979,7 +960,7 @@
                     <div class="carousel-item">
                       <img
                         src="./assets/images/placeholder.webp"
-                        data-src="https://picsum.photos/1280/720?random=3"
+                        data-src="./assets/images/placeholder.webp"
                         alt="image 3"
                         class="d-block img-fluid cursor-pointer"
                         onclick="undangan.guest.modal(this)"
@@ -1048,7 +1029,7 @@
                     <div class="carousel-item active">
                       <img
                         src="./assets/images/placeholder.webp"
-                        data-src="https://picsum.photos/1280/720?random=4"
+                        data-src="./assets/images/placeholder.webp"
                         alt="image 4"
                         class="d-block img-fluid cursor-pointer"
                         onclick="undangan.guest.modal(this)"
@@ -1057,7 +1038,7 @@
                     <div class="carousel-item">
                       <img
                         src="./assets/images/placeholder.webp"
-                        data-src="https://picsum.photos/1280/720?random=5"
+                        data-src="./assets/images/placeholder.webp"
                         alt="image 5"
                         class="d-block img-fluid cursor-pointer"
                         onclick="undangan.guest.modal(this)"
@@ -1066,7 +1047,7 @@
                     <div class="carousel-item">
                       <img
                         src="./assets/images/placeholder.webp"
-                        data-src="https://picsum.photos/1280/720?random=6"
+                        data-src="./assets/images/placeholder.webp"
                         alt="image 6"
                         class="d-block img-fluid cursor-pointer"
                         onclick="undangan.guest.modal(this)"
@@ -1582,7 +1563,7 @@
                 class="btn btn-outline-auto btn-sm shadow rounded-pill px-3 py-1"
                 style="font-size: 0.825rem"
               >
-                <i class="fa-solid fa-calendar-check me-2"></i>Save Google
+                <i class="fa-solid fa-calendar-check me-2"></i>Add to
                 Calendar
               </button>
             </div>

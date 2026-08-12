@@ -313,7 +313,7 @@ export const guest = (() => {
     /**
      * @returns {void}
      */
-    const buildGoogleCalendar = () => {
+    const buildICalendar = () => {
         const event = content.calendar();
 
         // Without a stored date there is nothing meaningful to add to a calendar,
@@ -331,27 +331,31 @@ export const guest = (() => {
             return `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}T${pad(d.getHours())}${pad(d.getMinutes())}00`;
         };
 
-        // One hour long, and left floating so Google reads it in ctz below.
         const end = new Date(event.start.getTime() + (60 * 60 * 1000));
 
-        const url = new URL('https://calendar.google.com/calendar/render');
-        const data = new URLSearchParams({
-            action: 'TEMPLATE',
-            text: event.title ?? 'Wedding',
-            dates: `${stamp(event.start)}/${stamp(end)}`,
-            ctz: config.get('tz'),
+        const ics = [
+            'BEGIN:VCALENDAR',
+            'VERSION:2.0',
+            'BEGIN:VEVENT',
+            `DTSTART:${stamp(event.start)}`,
+            `DTEND:${stamp(end)}`,
+            `SUMMARY:${event.title ?? 'Wedding'}`,
+            event.details ? `DESCRIPTION:${event.details}` : null,
+            event.location ? `LOCATION:${event.location}` : null,
+            'END:VEVENT',
+            'END:VCALENDAR',
+        ].filter(Boolean).join('\\r\\n');
+
+        document.querySelector('#home button')?.addEventListener('click', () => {
+            const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'wedding-invitation.ics';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(link.href);
         });
-
-        if (event.details) {
-            data.set('details', event.details);
-        }
-
-        if (event.location) {
-            data.set('location', event.location);
-        }
-
-        url.search = data.toString();
-        document.querySelector('#home button')?.addEventListener('click', () => window.open(url, '_blank'));
     };
 
     /**
@@ -403,7 +407,7 @@ export const guest = (() => {
      * @returns {Promise<void>}
      */
     const booting = async () => {
-        // Before countDownDate() and buildGoogleCalendar(), which both read
+        // Before countDownDate() and buildICalendar(), which both read
         // values that the stored content may have just replaced.
         content.apply();
 
@@ -419,7 +423,7 @@ export const guest = (() => {
         showGuestName();
         modalImageClick();
         normalizeArabicFont();
-        buildGoogleCalendar();
+        buildICalendar();
 
         if (information.has('presence')) {
             document.getElementById('form-presence').value = information.get('presence') ? '1' : '2';
