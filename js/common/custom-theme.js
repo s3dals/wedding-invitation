@@ -7,10 +7,10 @@ export const customTheme = (() => {
      * script gets its own list below rather than sharing this one.
      */
     const fonts = {
-        elegant: { family: 'Playfair Display', css: 'https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap', generic: 'serif' },
-        modern: { family: 'Poppins', css: 'https://fonts.googleapis.com/css2?family=Poppins&display=swap', generic: 'sans-serif' },
-        classic: { family: 'Merriweather', css: 'https://fonts.googleapis.com/css2?family=Merriweather&display=swap', generic: 'serif' },
-        script: { family: 'Great Vibes', css: 'https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap', generic: 'cursive' },
+        elegant: { family: 'Playfair Display', css: './assets/fonts/playfair-display.css', generic: 'serif' },
+        modern: { family: 'Poppins', css: './assets/fonts/poppins.css', generic: 'sans-serif' },
+        classic: { family: 'Merriweather', css: './assets/fonts/merriweather.css', generic: 'serif' },
+        script: { family: 'Great Vibes', css: './assets/fonts/great-vibes.css', generic: 'cursive' },
     };
 
     /**
@@ -19,11 +19,11 @@ export const customTheme = (() => {
      * hard work as body text - which is why the label says so in the dashboard.
      */
     const arabicFonts = {
-        naskh: { family: 'Noto Naskh Arabic', css: 'https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic&display=swap&subset=arabic', generic: 'serif' },
-        amiri: { family: 'Amiri', css: 'https://fonts.googleapis.com/css2?family=Amiri&display=swap&subset=arabic', generic: 'serif' },
-        cairo: { family: 'Cairo', css: 'https://fonts.googleapis.com/css2?family=Cairo&display=swap&subset=arabic', generic: 'sans-serif' },
-        tajawal: { family: 'Tajawal', css: 'https://fonts.googleapis.com/css2?family=Tajawal&display=swap&subset=arabic', generic: 'sans-serif' },
-        kufi: { family: 'Reem Kufi', css: 'https://fonts.googleapis.com/css2?family=Reem+Kufi&display=swap&subset=arabic', generic: 'sans-serif' },
+        naskh: { family: 'Noto Naskh Arabic', css: './assets/fonts/noto-naskh-arabic.css', generic: 'serif' },
+        amiri: { family: 'Amiri', css: './assets/fonts/amiri.css', generic: 'serif' },
+        cairo: { family: 'Cairo', css: './assets/fonts/cairo.css', generic: 'sans-serif' },
+        tajawal: { family: 'Tajawal', css: './assets/fonts/tajawal.css', generic: 'sans-serif' },
+        kufi: { family: 'Reem Kufi', css: './assets/fonts/reem-kufi.css', generic: 'sans-serif' },
     };
 
     /**
@@ -31,7 +31,7 @@ export const customTheme = (() => {
      * names and every section heading. It was declared in the CSS but never
      * fetched, so those headings fell through to the browser's default cursive.
      */
-    const esthetic = { family: 'Sacramento', css: 'https://fonts.googleapis.com/css2?family=Sacramento&display=swap' };
+    const esthetic = { family: 'Sacramento', css: './assets/fonts/sacramento.css' };
 
     /**
      * A safety net for Qur'anic annotation marks (U+06D6-U+06ED) and the
@@ -44,7 +44,7 @@ export const customTheme = (() => {
      * ever supplies characters that face is missing - the invitation keeps the
      * look it was given and the verses stop breaking.
      */
-    const quranic = { family: 'Amiri', css: 'https://fonts.googleapis.com/css2?family=Amiri&display=swap&subset=arabic' };
+    const quranic = { family: 'Amiri', css: './assets/fonts/amiri.css' };
 
     let active = false;
 

@@ -69,8 +69,8 @@ const loadConfetti = (c) => {
 const loadAdditionalFont = (c) => {
 
     const fonts = [
-        { css: 'https://fonts.googleapis.com/css2?family=Sacramento&display=swap', family: 'Sacramento' },
-        { css: 'https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic&display=swap', family: 'Noto Naskh Arabic' },
+        { css: './assets/fonts/sacramento.css', family: 'Sacramento' },
+        { css: './assets/fonts/noto-naskh-arabic.css', family: 'Noto Naskh Arabic' },
     ];
 
     /**
