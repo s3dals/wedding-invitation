@@ -102,11 +102,11 @@ export const loader = (opt = {}) => {
     const c = cache('libs').withForceCache();
 
     if (opt?.aos ?? true) {
-        promises.push(loadAOS(c));
+        promises.push(loadAOS(c).catch((err) => console.warn('AOS failed to load (non-critical):', err)));
     }
 
     if (opt?.confetti ?? true) {
-        promises.push(loadConfetti(c));
+        promises.push(loadConfetti(c).catch((err) => console.warn('Confetti failed to load (non-critical):', err)));
     }
 
     if (opt?.additionalFont ?? true) {
