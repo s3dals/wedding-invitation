@@ -404,6 +404,40 @@ export const guest = (() => {
     };
 
     /**
+     * Autoplays the full-bleed hero video behind the home section.
+     *
+     * Mobile Safari is strict about autoplay: it needs the video muted and
+     * inline, and even then Low Power Mode or the initial (pre-gesture) load
+     * can swallow the autoplay. So this sets the flags explicitly, attempts a
+     * play immediately, and retries once the invitation is opened — by then a
+     * real user gesture has happened and playback is always permitted.
+     *
+     * @returns {void}
+     */
+    const heroVideo = () => {
+        const vid = document.querySelector('#home .home-video');
+        if (!vid) {
+            return;
+        }
+
+        // Belt-and-suspenders: some iOS builds only honour the JS properties,
+        // not the HTML attributes.
+        vid.muted = true;
+        vid.defaultMuted = true;
+        vid.playsInline = true;
+
+        const play = () => {
+            const p = vid.play();
+            if (p && p.catch) {
+                p.catch(() => {});
+            }
+        };
+
+        play();
+        document.addEventListener('undangan.open', play);
+    };
+
+    /**
      * @returns {Promise<void>}
      */
     const booting = async () => {
@@ -424,6 +458,7 @@ export const guest = (() => {
         modalImageClick();
         normalizeArabicFont();
         buildICalendar();
+        heroVideo();
 
         if (information.has('presence')) {
             document.getElementById('form-presence').value = information.get('presence') ? '1' : '2';
