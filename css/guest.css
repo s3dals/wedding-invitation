@@ -119,6 +119,21 @@ html[data-bs-theme="dark"] .bg-white-black {
     -webkit-backdrop-filter: none;
 }
 
+/* The wave divider right after the home section used to blend into the old
+   light home background, but now that the home is a video it leaves a light
+   strip between the footage and the wave. Pull the wave up over the video's
+   bottom edge and make its own background transparent so the video shows
+   through above the crest. */
+#home + .svg-wrapper {
+    position: relative;
+    z-index: 3;
+    margin-top: -2rem;
+}
+
+#home + .svg-wrapper .color-theme-svg {
+    background-color: transparent;
+}
+
 .width-loading {
     width: 25%;
 }
