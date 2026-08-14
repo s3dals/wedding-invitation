@@ -84,6 +84,33 @@ html[data-bs-theme="dark"] .bg-white-black {
     mask-image: linear-gradient(0.5turn, transparent, black 40%, black 60%, transparent);
 }
 
+/* Hero background video: full-bleed swan scene behind the home section,
+   with a warm veil so the names and date stay readable over it. */
+.home-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+    opacity: 0;
+    animation: home-video-fade 1.4s ease 0.2s forwards;
+}
+
+@keyframes home-video-fade {
+    to { opacity: 1; }
+}
+
+.home-veil {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background:
+        radial-gradient(80% 50% at 50% 38%, rgba(253, 248, 239, 0.42), rgba(253, 248, 239, 0.06) 60%, transparent 82%),
+        linear-gradient(180deg, rgba(253, 248, 239, 0.22) 0%, transparent 34%, rgba(247, 239, 227, 0.48) 100%);
+}
+
 .width-loading {
     width: 25%;
 }

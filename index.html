@@ -210,16 +210,24 @@
             id="home"
             class="bg-light-dark position-relative overflow-hidden p-0 m-0"
           >
-            <img
-              src="./assets/images/placeholder.webp"
-              data-src="./assets/images/bg.webp"
-              alt="bg"
-              class="position-absolute opacity-25 top-50 start-50 translate-middle bg-cover-home"
-            />
+            <video
+              class="home-video"
+              autoplay
+              muted
+              loop
+              playsinline
+              webkit-playsinline
+              preload="auto"
+              poster="./assets/images/hero-poster.jpg"
+              aria-hidden="true"
+            >
+              <source src="./assets/video/hero.mp4" type="video/mp4" />
+            </video>
+            <div class="home-veil" aria-hidden="true"></div>
 
             <div
               class="position-relative text-center bg-overlay-auto"
-              style="background-color: unset"
+              style="background-color: unset; z-index: 2"
             >
               <h1
                 class="font-esthetic pt-5 pb-4 fw-medium"
