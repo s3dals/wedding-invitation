@@ -107,8 +107,16 @@ html[data-bs-theme="dark"] .bg-white-black {
     z-index: 1;
     pointer-events: none;
     background:
-        radial-gradient(80% 50% at 50% 38%, rgba(253, 248, 239, 0.42), rgba(253, 248, 239, 0.06) 60%, transparent 82%),
-        linear-gradient(180deg, rgba(253, 248, 239, 0.22) 0%, transparent 34%, rgba(247, 239, 227, 0.48) 100%);
+        radial-gradient(80% 50% at 50% 38%, rgba(253, 248, 239, 0.14), rgba(253, 248, 239, 0.02) 60%, transparent 82%),
+        linear-gradient(180deg, rgba(253, 248, 239, 0.06) 0%, transparent 34%, rgba(247, 239, 227, 0.16) 100%);
+}
+
+/* The home overlay only needs to sit above the video — its backdrop blur
+   smears the video, so drop it and let the light veil above keep the text
+   readable without washing out the footage. */
+#home .bg-overlay-auto {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
 }
 
 .width-loading {
