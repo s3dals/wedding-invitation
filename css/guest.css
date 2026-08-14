@@ -210,58 +210,73 @@ html[dir="rtl"] .end-0 {
     inset: 0;
     overflow: hidden;
     background: var(--theme-background, #fff);
+    /* Gives all four flaps one shared vanishing point, so they read as panels of
+       the same envelope hinging away in space rather than four unrelated planes. */
+    perspective: 1400px;
 }
 
 /* Four triangles meeting in the middle, the way a paper envelope folds. Each
-   gets a slightly different shade so the folds read as folds. */
+   gets a slightly different shade so the folds read as folds, and each hinges
+   from its own outer edge - real paper folds along a crease, it does not slide
+   off screen flat. */
 .envelope-flap {
     position: absolute;
     inset: 0;
-    transition: transform 0.75s cubic-bezier(0.6, 0, 0.25, 1), opacity 0.7s ease;
+    backface-visibility: hidden;
+    transition: transform 0.85s cubic-bezier(0.6, 0, 0.25, 1), opacity 0.6s ease 0.35s;
     will-change: transform, opacity;
 }
 
 .envelope-flap-top {
     clip-path: polygon(0 0, 100% 0, 50% 50%);
     background: var(--theme-background);
+    transform-origin: 50% 0%;
 }
 
 .envelope-flap-bottom {
     clip-path: polygon(0 100%, 100% 100%, 50% 50%);
     background: linear-gradient(0deg, color-mix(in srgb, var(--theme-background) 94%, var(--theme-text)), var(--theme-background));
+    transform-origin: 50% 100%;
 }
 
 .envelope-flap-left {
     clip-path: polygon(0 0, 0 100%, 50% 50%);
     background: linear-gradient(90deg, color-mix(in srgb, var(--theme-background) 97%, var(--theme-text)), var(--theme-background));
+    transform-origin: 0% 50%;
 }
 
 .envelope-flap-right {
     clip-path: polygon(100% 0, 100% 100%, 50% 50%);
     background: linear-gradient(270deg, color-mix(in srgb, var(--theme-background) 97%, var(--theme-text)), var(--theme-background));
+    transform-origin: 100% 50%;
 }
 
-/* Staggered so the folds peel rather than vanish together. */
+/* Staggered so the folds peel rather than vanish together. Rotated past 90deg
+   so each flap swings behind the envelope rather than stopping edge-on; opacity
+   still finishes the job a beat later, both because backface-visibility can
+   leave a sliver visible at extreme angles under real-world rounding, and so a
+   reduced-motion swap - which skips the transition and jumps straight to these
+   end values - still hides the flap outright rather than leaving it edge-on. */
 .envelope-open .envelope-flap-top {
-    transform: translateY(-115%) rotate(-2deg);
+    transform: rotateX(-124deg);
     opacity: 0;
     transition-delay: 0.02s;
 }
 
 .envelope-open .envelope-flap-left {
-    transform: translateX(-115%) rotate(1deg);
+    transform: rotateY(124deg);
     opacity: 0;
     transition-delay: 0.09s;
 }
 
 .envelope-open .envelope-flap-right {
-    transform: translateX(115%) rotate(-1deg);
+    transform: rotateY(-124deg);
     opacity: 0;
     transition-delay: 0.16s;
 }
 
 .envelope-open .envelope-flap-bottom {
-    transform: translateY(115%) rotate(2deg);
+    transform: rotateX(124deg);
     opacity: 0;
     transition-delay: 0.23s;
 }
