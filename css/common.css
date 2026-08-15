@@ -192,8 +192,13 @@ html.custom-theme-active body {
 /* Same reasoning as the dark/light .navbar rules above: raised from 75% to
    92% so a dark hero video behind the bar can't wash out the nav-link text
    sitting on top of it. */
+/* Darkened a step below the raw theme background - color-mix(...,transparent)
+   only controls opacity, it never changes the hue, so at 92% opaque the bar
+   still read as the same pale background colour, just with a hair of
+   whatever's behind it showing through. Mixing in some theme-text first gives
+   the bar its own visibly darker shade before that opacity blend runs. */
 html.custom-theme-active .navbar {
-    background-color: color-mix(in srgb, var(--theme-background) 92%, transparent) !important;
+    background-color: color-mix(in srgb, color-mix(in srgb, var(--theme-background) 75%, var(--theme-text) 25%) 92%, transparent) !important;
     backdrop-filter: blur(0.5rem);
 }
 
