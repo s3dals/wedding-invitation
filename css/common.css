@@ -87,13 +87,18 @@ svg>path {
     transition: color 350ms ease;
 }
 
+/* The bottom nav sits over whatever the page is showing behind it - on this
+   template that includes a full-bleed hero video. At 0.75 alpha a dark video
+   frame was bleeding enough through the blur to wash out the nav-link text
+   sitting on top of it. Raised to 0.92 so the bar's own colour, not the media
+   behind it, is what governs legibility. */
 html[data-bs-theme="dark"] .navbar {
-    background-color: rgba(var(--bs-dark-rgb), 0.75) !important;
+    background-color: rgba(var(--bs-dark-rgb), 0.92) !important;
     backdrop-filter: blur(0.5rem);
 }
 
 html[data-bs-theme="light"] .navbar {
-    background-color: rgba(var(--bs-light-rgb), 0.75) !important;
+    background-color: rgba(var(--bs-light-rgb), 0.92) !important;
     backdrop-filter: blur(0.5rem);
 }
 
@@ -184,8 +189,11 @@ html.custom-theme-active body {
     color: var(--theme-text) !important;
 }
 
+/* Same reasoning as the dark/light .navbar rules above: raised from 75% to
+   92% so a dark hero video behind the bar can't wash out the nav-link text
+   sitting on top of it. */
 html.custom-theme-active .navbar {
-    background-color: color-mix(in srgb, var(--theme-background) 75%, transparent) !important;
+    background-color: color-mix(in srgb, var(--theme-background) 92%, transparent) !important;
     backdrop-filter: blur(0.5rem);
 }
 
