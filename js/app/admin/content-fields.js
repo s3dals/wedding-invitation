@@ -159,6 +159,7 @@ export const contentFields = [
             { key: 'nav_gallery', label: 'Gallery', type: 'text' },
             { key: 'nav_rsvp', label: 'RSVP', type: 'text', hint: 'Only shown to guests with a personal link.' },
             { key: 'nav_wishes', label: 'Wishes', type: 'text' },
+            { key: 'nav_music', label: 'Music', type: 'text' },
         ],
     },
 ];

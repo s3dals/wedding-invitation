@@ -1602,6 +1602,25 @@
                 >
               </a>
             </li>
+            <li class="nav-item d-none" id="nav-music">
+              <button
+                type="button"
+                id="button-music"
+                class="nav-link cursor-pointer border-0 bg-transparent w-100"
+                aria-label="Change audio"
+                data-offline-disabled="false"
+              >
+                <span class="music-icon">
+                  <i class="fa-solid fa-circle-pause spin-button"></i>
+                </span>
+                <span
+                  class="d-block"
+                  style="font-size: 0.7rem"
+                  data-content="nav_music"
+                  >Music</span
+                >
+              </button>
+            </li>
           </ul>
         </nav>
       </div>
@@ -1712,17 +1731,6 @@
         onclick="undangan.theme.change()"
       >
         <i class="fa-solid fa-circle-half-stroke"></i>
-      </button>
-
-      <!-- Audio Button -->
-      <button
-        type="button"
-        id="button-music"
-        class="btn bg-light-dark border btn-sm rounded-circle d-none btn-transparent shadow-sm mt-3"
-        aria-label="Change audio"
-        data-offline-disabled="false"
-      >
-        <i class="fa-solid fa-circle-pause spin-button"></i>
       </button>
     </div>
 

@@ -53,6 +53,7 @@ export const audio = (() => {
 
         let isPlay = false;
         const music = document.getElementById('button-music');
+        const musicNav = document.getElementById('nav-music');
 
         /**
          * @returns {Promise<void>}
@@ -67,7 +68,7 @@ export const audio = (() => {
                 await audioEl.play();
                 isPlay = true;
                 music.disabled = false;
-                music.innerHTML = statePlay;
+                music.querySelector('.music-icon').innerHTML = statePlay;
             } catch (err) {
                 isPlay = false;
                 util.notify(err).error();
@@ -80,11 +81,13 @@ export const audio = (() => {
         const pause = () => {
             isPlay = false;
             audioEl.pause();
-            music.innerHTML = statePause;
+            music.querySelector('.music-icon').innerHTML = statePause;
         };
 
         document.addEventListener('undangan.open', () => {
-            music.classList.remove('d-none');
+            if (musicNav) {
+                musicNav.classList.remove('d-none');
+            }
 
             if (playOnOpen) {
                 play();
