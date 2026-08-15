@@ -106,9 +106,15 @@ html[data-bs-theme="dark"] .bg-white-black {
     inset: 0;
     z-index: 1;
     pointer-events: none;
-    background:
-        radial-gradient(80% 50% at 50% 38%, rgba(253, 248, 239, 0.14), rgba(253, 248, 239, 0.02) 60%, transparent 82%),
-        linear-gradient(180deg, rgba(253, 248, 239, 0.06) 0%, transparent 34%, rgba(247, 239, 227, 0.16) 100%);
+    /* Full-height veil: the old radial gradient was centred at ~38% height, so
+       once the hero became full-screen it only lit the middle and left the top
+       and bottom of the video bare. A vertical gradient keeps a soft ivory tint
+       over the whole frame, a touch stronger at the edges for text legibility. */
+    background: linear-gradient(180deg,
+        rgba(253, 248, 239, 0.35) 0%,
+        rgba(253, 248, 239, 0.1) 30%,
+        rgba(253, 248, 239, 0.1) 70%,
+        rgba(253, 248, 239, 0.4) 100%);
 }
 
 /* The home overlay only needs to sit above the video — its backdrop blur
