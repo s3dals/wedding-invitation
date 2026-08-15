@@ -134,6 +134,17 @@ html[data-bs-theme="dark"] .bg-white-black {
     background-color: transparent;
 }
 
+/* Full-screen hero: give the background video room to breathe and centre the
+   invitation text over it. Without a min-height the section collapses to its
+   (now shorter) content, leaving the wave to swallow most of the footage. */
+#home {
+    min-height: 100vh;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
 .width-loading {
     width: 25%;
 }
