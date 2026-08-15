@@ -215,7 +215,14 @@ html.custom-theme-active .bg-light-dark {
 /* Bootstrap's left-to-right build compiles the logical spacing utilities down
    to physical properties, so the ones this page uses need mirroring by hand.
    Loading the whole RTL stylesheet instead would cost a second 230 kB download
-   for the sake of six rules. */
+   for the sake of seven rules. */
+/* Bootstrap's .navbar-nav only resets padding-left; in RTL the list's default
+   40px padding lands on the right instead, leaving a gap before the first
+   (rightmost) nav item. */
+html[dir="rtl"] .navbar-nav {
+    padding-right: 0;
+}
+
 html[dir="rtl"] .me-1 {
     margin-right: 0 !important;
     margin-left: 0.25rem !important;
