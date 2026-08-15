@@ -101,20 +101,18 @@ html[data-bs-theme="dark"] .bg-white-black {
     to { opacity: 1; }
 }
 
+/* Full-height veil, one flat tint rather than a gradient: the text now sits
+   vertically centred in the full-screen hero, which is exactly where a
+   gradient that dips in the middle (to stay light at the edges) would leave
+   the video untinted right behind the couple's name. A single flat colour
+   keeps a little warmth over the whole frame, evenly, wherever the text ends
+   up. */
 .home-veil {
     position: absolute;
     inset: 0;
     z-index: 1;
     pointer-events: none;
-    /* Full-height veil: the old radial gradient was centred at ~38% height, so
-       once the hero became full-screen it only lit the middle and left the top
-       and bottom of the video bare. A vertical gradient keeps a soft ivory tint
-       over the whole frame, a touch stronger at the edges for text legibility. */
-    background: linear-gradient(180deg,
-        rgba(253, 248, 239, 0.35) 0%,
-        rgba(253, 248, 239, 0.1) 30%,
-        rgba(253, 248, 239, 0.1) 70%,
-        rgba(253, 248, 239, 0.4) 100%);
+    background: rgba(253, 248, 239, 0.22);
 }
 
 /* The home overlay only needs to sit above the video — its backdrop blur
