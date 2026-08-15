@@ -256,8 +256,7 @@
                 class="btn btn-outline-auto btn-sm shadow rounded-pill px-3 py-1"
                 style="font-size: 0.825rem"
               >
-                <i class="fa-solid fa-calendar-check me-2"></i>Add to
-                Calendar
+                <i class="fa-solid fa-calendar-check me-2"></i><span data-content="add_to_calendar">Add to Calendar</span>
               </button>
 
               <div
@@ -270,7 +269,7 @@
                 </div>
               </div>
 
-              <p class="pb-4 m-0 text-secondary" style="font-size: 0.825rem">
+              <p class="pb-4 m-0 text-secondary" style="font-size: 0.825rem" data-content="scroll_down">
                 Scroll Down
               </p>
             </div>
@@ -552,7 +551,7 @@
                       class="btn btn-outline-auto btn-sm rounded-4 shadow-sm"
                       onclick="undangan.guest.showStory(this.parentNode)"
                     >
-                      <i class="fa-solid fa-heart fa-bounce me-2"></i>See Story
+                      <i class="fa-solid fa-heart fa-bounce me-2"></i><span data-content="story_button">See Story</span>
                     </button>
                   </div>
 
@@ -945,7 +944,7 @@
                       class="carousel-control-prev-icon"
                       aria-hidden="true"
                     ></span>
-                    <span class="visually-hidden">Previous</span>
+                    <span class="visually-hidden" data-content="carousel_prev">Previous</span>
                   </button>
 
                   <button
@@ -958,7 +957,7 @@
                       class="carousel-control-next-icon"
                       aria-hidden="true"
                     ></span>
-                    <span class="visually-hidden">Next</span>
+                    <span class="visually-hidden" data-content="carousel_next">Next</span>
                   </button>
                 </div>
 
@@ -1032,7 +1031,7 @@
                       class="carousel-control-prev-icon"
                       aria-hidden="true"
                     ></span>
-                    <span class="visually-hidden">Previous</span>
+                    <span class="visually-hidden" data-content="carousel_prev">Previous</span>
                   </button>
 
                   <button
@@ -1045,7 +1044,7 @@
                       class="carousel-control-next-icon"
                       aria-hidden="true"
                     ></span>
-                    <span class="visually-hidden">Next</span>
+                    <span class="visually-hidden" data-content="carousel_next">Next</span>
                   </button>
                 </div>
               </div>
@@ -1077,7 +1076,7 @@
               >
                 Love Gift
               </h2>
-              <p class="mb-1" style="font-size: 0.95rem">
+              <p class="mb-1" style="font-size: 0.95rem" data-content="gift_intro">
                 For those who wish to send a gift of love to us, you may send it
                 through:
               </p>
@@ -1088,7 +1087,7 @@
                 data-aos-duration="2500"
               >
                 <i class="fa-solid fa-money-bill-transfer"></i>
-                <p class="d-inline">Bank Transfer</p>
+                <p class="d-inline" data-content="gift_1_label">Bank Transfer</p>
 
                 <div
                   class="d-flex justify-content-between align-items-center mt-2"
@@ -1103,15 +1102,14 @@
                     data-bs-toggle="collapse"
                     data-bs-target="#collapseTf"
                   >
-                    <i class="fa-solid fa-circle-info fa-sm me-1"></i>Details
+                    <i class="fa-solid fa-circle-info fa-sm me-1"></i><span data-content="gift_details">Details</span>
                   </button>
                 </div>
 
                 <div class="collapse" id="collapseTf">
                   <hr class="my-2 py-1" />
                   <p class="m-0" style="font-size: 0.9rem">
-                    <i class="fa-solid fa-building-columns me-1"></i>Bank
-                    Central Asia
+                    <i class="fa-solid fa-building-columns me-1"></i><span data-content="gift_bank_name">Bank Central Asia</span>
                   </p>
                   <div
                     class="d-flex justify-content-between align-items-center mt-2"
@@ -1141,7 +1139,7 @@
                 data-aos-duration="2500"
               >
                 <i class="fa-solid fa-qrcode fa-lg"></i>
-                <p class="d-inline">Qris</p>
+                <p class="d-inline" data-content="gift_2_label">Qris</p>
 
                 <div
                   class="d-flex justify-content-between align-items-center mt-2"
@@ -1156,7 +1154,7 @@
                     data-bs-toggle="collapse"
                     data-bs-target="#collapseQris"
                   >
-                    <i class="fa-solid fa-circle-info fa-sm me-1"></i>Details
+                    <i class="fa-solid fa-circle-info fa-sm me-1"></i><span data-content="gift_details">Details</span>
                   </button>
                 </div>
 
@@ -1171,7 +1169,7 @@
                 data-aos-duration="2500"
               >
                 <i class="fa-solid fa-gift fa-lg"></i>
-                <p class="d-inline">Gift</p>
+                <p class="d-inline" data-content="gift_3_label">Gift</p>
 
                 <div
                   class="d-flex justify-content-between align-items-center mt-2"
@@ -1186,7 +1184,7 @@
                     data-bs-toggle="collapse"
                     data-bs-target="#collapseGift"
                   >
-                    <i class="fa-solid fa-circle-info fa-sm me-1"></i>Details
+                    <i class="fa-solid fa-circle-info fa-sm me-1"></i><span data-content="gift_details">Details</span>
                   </button>
                 </div>
 
@@ -1366,7 +1364,7 @@
 
                 <div class="mb-3">
                   <label for="form-name" class="form-label my-1"
-                    ><i class="fa-solid fa-person me-2"></i>Name</label
+                    ><i class="fa-solid fa-person me-2"></i><span data-content="comment_name_label">Name</span></label
                   >
                   <input
                     dir="auto"
@@ -1376,6 +1374,7 @@
                     minlength="2"
                     maxlength="50"
                     placeholder="Enter your name"
+                    data-content-attr="placeholder:comment_name_placeholder"
                     autocomplete="name"
                     data-offline-disabled="false"
                   />
@@ -1384,7 +1383,7 @@
                 <div class="mb-3" id="form-presence-wrapper">
                   <label for="form-presence" class="form-label my-1"
                     ><i class="fa-solid fa-person-circle-question me-2"></i
-                    >Attendance</label
+                    ><span data-content="comment_presence_label">Attendance</span></label
                   >
                   <select
                     class="form-select shadow-sm rounded-4"
@@ -1392,16 +1391,16 @@
                     autocomplete="off"
                     data-offline-disabled="false"
                   >
-                    <option value="0" selected>Confirm Attendance</option>
-                    <option value="1">&#9989; Attending</option>
-                    <option value="2">&#10060; Unable to Attend</option>
+                    <option value="0" selected data-content="comment_presence_default">Confirm Attendance</option>
+                    <option value="1" data-content="comment_presence_yes">&#9989; Attending</option>
+                    <option value="2" data-content="comment_presence_no">&#10060; Unable to Attend</option>
                   </select>
                 </div>
 
                 <div class="d-block mb-3" id="comment-form-default">
                   <div
                     id="information"
-                    class="alert alert-info alert-dismissible fade show rounded-4"
+                    class="alert alert-info alert-dismissible fade show rounded-4 d-none"
                     role="alert"
                   >
                     <button
@@ -1424,8 +1423,7 @@
                   </div>
 
                   <label for="form-comment" class="form-label my-1"
-                    ><i class="fa-solid fa-comment me-2"></i>Wishes &amp;
-                    Prayers</label
+                    ><i class="fa-solid fa-comment me-2"></i><span data-content="comment_label">Wishes &amp; Prayers</span></label
                   >
                   <div class="position-relative">
                     <button
@@ -1446,6 +1444,7 @@
                       minlength="1"
                       maxlength="1000"
                       placeholder="Write your wishes and prayers"
+                      data-content-attr="placeholder:comment_placeholder"
                       autocomplete="off"
                       data-offline-disabled="false"
                     ></textarea>
@@ -1460,7 +1459,7 @@
                     onclick="undangan.comment.send(this)"
                     data-offline-disabled="false"
                   >
-                    <i class="fa-solid fa-paper-plane me-2"></i>Send
+                    <i class="fa-solid fa-paper-plane me-2"></i><span data-content="comment_send">Send</span>
                   </button>
                 </div>
               </div>
@@ -1522,8 +1521,7 @@
                 class="btn btn-outline-auto btn-sm shadow rounded-pill px-3 py-1"
                 style="font-size: 0.825rem"
               >
-                <i class="fa-solid fa-calendar-check me-2"></i>Add to
-                Calendar
+                <i class="fa-solid fa-calendar-check me-2"></i><span data-content="add_to_calendar">Add to Calendar</span>
               </button>
             </div>
           </section>
@@ -1760,10 +1758,11 @@
             class="d-none mt-1 text-theme-auto"
             id="progress-info"
             style="font-size: 0.8rem"
+            data-content="loading_text"
             >Loading application...</small
           >
           <noscript>
-            <small class="mt-1 text-danger"
+            <small class="mt-1 text-danger" data-content="noscript_message"
               >Sorry, this invitation requires javascript to work</small
             >
           </noscript>

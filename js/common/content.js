@@ -147,11 +147,25 @@ export const content = (() => {
     });
 
     /**
+     * The browser tab title. Kept separate from applyTexts because a <title>
+     * is not an element applyTexts can reach with [data-content].
+     *
+     * @returns {void}
+     */
+    const applyTitle = () => {
+        const title = get('page_title');
+        if (title !== null) {
+            document.title = title;
+        }
+    };
+
+    /**
      * @returns {void}
      */
     const apply = () => {
         applyTexts();
         applyEventDate();
+        applyTitle();
     };
 
     /**
