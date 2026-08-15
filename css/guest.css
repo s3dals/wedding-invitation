@@ -84,6 +84,56 @@ html[data-bs-theme="dark"] .bg-white-black {
     mask-image: linear-gradient(0.5turn, transparent, black 40%, black 60%, transparent);
 }
 
+/* Hero background video: full-bleed swan scene behind the home section,
+   with a warm veil so the names and date stay readable over it. */
+.home-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+    opacity: 0;
+    animation: home-video-fade 1.4s ease 0.2s forwards;
+}
+
+@keyframes home-video-fade {
+    to { opacity: 1; }
+}
+
+.home-veil {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background:
+        radial-gradient(80% 50% at 50% 38%, rgba(253, 248, 239, 0.14), rgba(253, 248, 239, 0.02) 60%, transparent 82%),
+        linear-gradient(180deg, rgba(253, 248, 239, 0.06) 0%, transparent 34%, rgba(247, 239, 227, 0.16) 100%);
+}
+
+/* The home overlay only needs to sit above the video — its backdrop blur
+   smears the video, so drop it and let the light veil above keep the text
+   readable without washing out the footage. */
+#home .bg-overlay-auto {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
+/* The wave divider right after the home section used to blend into the old
+   light home background, but now that the home is a video it leaves a light
+   strip between the footage and the wave. Pull the wave up over the video's
+   bottom edge and make its own background transparent so the video shows
+   through above the crest. */
+#home + .svg-wrapper {
+    position: relative;
+    z-index: 3;
+    margin-top: -2rem;
+}
+
+#home + .svg-wrapper .color-theme-svg {
+    background-color: transparent;
+}
+
 .width-loading {
     width: 25%;
 }
@@ -146,7 +196,7 @@ html.custom-theme-active .bg-light-dark {
 /* Bootstrap's left-to-right build compiles the logical spacing utilities down
    to physical properties, so the ones this page uses need mirroring by hand.
    Loading the whole RTL stylesheet instead would cost a second 230 kB download
-   for the sake of five rules. */
+   for the sake of six rules. */
 html[dir="rtl"] .me-1 {
     margin-right: 0 !important;
     margin-left: 0.25rem !important;
@@ -169,6 +219,14 @@ html[dir="rtl"] .text-start {
 html[dir="rtl"] .end-0 {
     right: auto !important;
     left: 0 !important;
+}
+
+/* Used on the Love Story timeline: the text column butts up against the
+   numbered circle with no gap on its near side. In RTL the row's flex order
+   reverses so that near side is physically the right, not the left. */
+html[dir="rtl"] .ps-0 {
+    padding-left: calc(var(--bs-gutter-x, 1.5rem) * 0.5) !important;
+    padding-right: 0 !important;
 }
 /* Countdown. Both parts take the text colour rather than the accent: an accent
    is free to be pale, and unreadable digits are worse than plain ones. Size and

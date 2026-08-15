@@ -110,7 +110,6 @@ export const contentFields = [
             { key: 'envelope_prompt', label: 'Envelope: tap hint', type: 'text', hint: 'Under the wax seal, e.g. "Tap the seal to open".' },
             { key: 'envelope_monogram', label: 'Envelope: seal monogram', type: 'text', hint: 'The mark stamped into the wax. One or two characters work best - an "&", or your initials.' },
             { key: 'envelope_skip', label: 'Envelope: skip link', type: 'text', hint: 'Top corner, for anyone who would rather go straight in.' },
-            { key: 'open_button', label: 'Open invitation button', type: 'text', hint: 'No longer shown - the wax seal opens the invitation now.' },
             { key: 'maps_label', label: 'Maps button label', type: 'text' },
             { key: 'maps_url', label: 'Google Maps link', type: 'text', hint: 'Full https:// link to the venue.' },
             { key: 'closing_thanks', label: 'Closing thank you', type: 'area' },

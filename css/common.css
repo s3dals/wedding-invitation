@@ -194,7 +194,11 @@ html.custom-theme-active .text-theme-auto {
 }
 
 html.custom-theme-active .nav-link {
-    color: color-mix(in srgb, var(--theme-text) 50%, transparent) !important;
+    color: color-mix(in srgb, var(--theme-text) 65%, transparent) !important;
+}
+
+html.custom-theme-active .nav-link.active {
+    color: var(--theme-text) !important;
 }
 
 html.custom-theme-active .bg-theme-auto {

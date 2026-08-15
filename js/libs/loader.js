@@ -56,10 +56,16 @@ const loadConfetti = () => {
 };
 
 /**
- * Loads the decorative and Qur'anic fallback fonts. The CSS files are served
- * from the same origin now, so they are linked directly rather than through
- * the blob-URL cache: fonts served from a blob: URL hit a CORS wall in the
- * browser and fail with "A network error occurred".
+ * Loads the decorative font. The CSS file is served from the same origin
+ * now, so it is linked directly rather than through the blob-URL cache:
+ * fonts served from a blob: URL hit a CORS wall in the browser and fail with
+ * "A network error occurred".
+ *
+ * The Qur'anic fallback face (Amiri) is not loaded here - custom-theme.js
+ * already fetches it unconditionally as part of applying the theme, so
+ * fetching Noto Naskh Arabic here was dead weight: it is only the actual
+ * Qur'anic rescue font when the owner's chosen Arabic face happens to be
+ * Naskh, and in that case custom-theme.js loads it anyway.
  *
  * @returns {Promise<void>}
  */
@@ -67,7 +73,6 @@ const loadAdditionalFont = () => {
 
     const fonts = [
         { css: './assets/fonts/sacramento.css', family: 'Sacramento' },
-        { css: './assets/fonts/noto-naskh-arabic.css', family: 'Noto Naskh Arabic' },
     ];
 
     /**
