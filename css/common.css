@@ -198,7 +198,7 @@ html.custom-theme-active body {
    whatever's behind it showing through. Mixing in some theme-text first gives
    the bar its own visibly darker shade before that opacity blend runs. */
 html.custom-theme-active .navbar {
-    background-color: color-mix(in srgb, color-mix(in srgb, var(--theme-background) 75%, var(--theme-text) 25%) 92%, transparent) !important;
+    background-color: color-mix(in srgb, color-mix(in srgb, var(--theme-background) 95%, var(--theme-text) 05%) 92%, transparent) !important;
     backdrop-filter: blur(0.5rem);
 }
 
