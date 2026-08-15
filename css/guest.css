@@ -196,7 +196,7 @@ html.custom-theme-active .bg-light-dark {
 /* Bootstrap's left-to-right build compiles the logical spacing utilities down
    to physical properties, so the ones this page uses need mirroring by hand.
    Loading the whole RTL stylesheet instead would cost a second 230 kB download
-   for the sake of five rules. */
+   for the sake of six rules. */
 html[dir="rtl"] .me-1 {
     margin-right: 0 !important;
     margin-left: 0.25rem !important;
@@ -219,6 +219,14 @@ html[dir="rtl"] .text-start {
 html[dir="rtl"] .end-0 {
     right: auto !important;
     left: 0 !important;
+}
+
+/* Used on the Love Story timeline: the text column butts up against the
+   numbered circle with no gap on its near side. In RTL the row's flex order
+   reverses so that near side is physically the right, not the left. */
+html[dir="rtl"] .ps-0 {
+    padding-left: calc(var(--bs-gutter-x, 1.5rem) * 0.5) !important;
+    padding-right: 0 !important;
 }
 /* Countdown. Both parts take the text colour rather than the accent: an accent
    is free to be pale, and unreadable digits are worse than plain ones. Size and
