@@ -311,68 +311,23 @@ export const guest = (() => {
     };
 
     /**
-     * RFC 5545 TEXT values need backslash, comma, semicolon and newline
-     * escaped - the invitation line and venue address are free-form guest
-     * content and can contain any of them.
-     *
-     * @param {string} value
-     * @returns {string}
-     */
-    const escapeIcsText = (value) => value
-        .replace(/\\/g, '\\\\')
-        .replace(/,/g, '\\,')
-        .replace(/;/g, '\\;')
-        .replace(/\r?\n/g, '\\n');
-
-    /**
      * @returns {void}
      */
     const buildICalendar = () => {
-        const event = content.calendar();
-
-        // Without a stored date there is nothing meaningful to add to a calendar,
-        // so leave the button inert rather than linking to a wrong year.
-        if (!event.start) {
+        // Without a stored date there is nothing meaningful to add to a
+        // calendar, so leave the button inert rather than linking to a wrong
+        // year. The file itself is built by the /calendar route, which reads
+        // the same stored values this check does.
+        if (!content.calendar().start) {
             return;
         }
 
-        /**
-         * @param {Date} d
-         * @returns {string}
-         */
-        const stamp = (d) => {
-            const pad = (n) => String(n).padStart(2, '0');
-            return `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}T${pad(d.getHours())}${pad(d.getMinutes())}00`;
-        };
-
-        const end = new Date(event.start.getTime() + (60 * 60 * 1000));
-
-        // A real CRLF between each line, not the four-character text "\r\n" -
-        // every calendar app parses ICS by that line break, so a file without
-        // it is a single unparseable line and silently fails to import
-        // anywhere, iOS included.
-        const ics = [
-            'BEGIN:VCALENDAR',
-            'VERSION:2.0',
-            'BEGIN:VEVENT',
-            `DTSTART:${stamp(event.start)}`,
-            `DTEND:${stamp(end)}`,
-            `SUMMARY:${escapeIcsText(event.title ?? 'Wedding')}`,
-            event.details ? `DESCRIPTION:${escapeIcsText(event.details)}` : null,
-            event.location ? `LOCATION:${escapeIcsText(event.location)}` : null,
-            'END:VEVENT',
-            'END:VCALENDAR',
-        ].filter(Boolean).join('\r\n');
-
         document.querySelector('#home button')?.addEventListener('click', () => {
-            // iOS Safari's "Add to Calendar" sheet only appears for a direct,
-            // undownloaded navigation to a text/calendar URI - a Blob URL
-            // behind an <a download> either gets ignored or opens the raw
-            // text instead of handing off to Calendar. A data: URI navigated
-            // to directly works the same way on desktop too: text/calendar
-            // isn't renderable, so the browser downloads or opens it exactly
-            // as before.
-            window.location.href = `data:text/calendar;charset=utf-8,${encodeURIComponent(ics)}`;
+            // A real URL serving text/calendar, not a data: or blob: URI:
+            // iOS Safari refuses to navigate to either at the top level, which
+            // is why the button did nothing at all on an iPhone. Given an
+            // ordinary https response it offers to add the event instead.
+            window.location.href = './calendar';
         });
     };
 
