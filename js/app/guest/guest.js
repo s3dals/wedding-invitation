@@ -311,6 +311,20 @@ export const guest = (() => {
     };
 
     /**
+     * RFC 5545 TEXT values need backslash, comma, semicolon and newline
+     * escaped - the invitation line and venue address are free-form guest
+     * content and can contain any of them.
+     *
+     * @param {string} value
+     * @returns {string}
+     */
+    const escapeIcsText = (value) => value
+        .replace(/\\/g, '\\\\')
+        .replace(/,/g, '\\,')
+        .replace(/;/g, '\\;')
+        .replace(/\r?\n/g, '\\n');
+
+    /**
      * @returns {void}
      */
     const buildICalendar = () => {
@@ -333,28 +347,32 @@ export const guest = (() => {
 
         const end = new Date(event.start.getTime() + (60 * 60 * 1000));
 
+        // A real CRLF between each line, not the four-character text "\r\n" -
+        // every calendar app parses ICS by that line break, so a file without
+        // it is a single unparseable line and silently fails to import
+        // anywhere, iOS included.
         const ics = [
             'BEGIN:VCALENDAR',
             'VERSION:2.0',
             'BEGIN:VEVENT',
             `DTSTART:${stamp(event.start)}`,
             `DTEND:${stamp(end)}`,
-            `SUMMARY:${event.title ?? 'Wedding'}`,
-            event.details ? `DESCRIPTION:${event.details}` : null,
-            event.location ? `LOCATION:${event.location}` : null,
+            `SUMMARY:${escapeIcsText(event.title ?? 'Wedding')}`,
+            event.details ? `DESCRIPTION:${escapeIcsText(event.details)}` : null,
+            event.location ? `LOCATION:${escapeIcsText(event.location)}` : null,
             'END:VEVENT',
             'END:VCALENDAR',
-        ].filter(Boolean).join('\\r\\n');
+        ].filter(Boolean).join('\r\n');
 
         document.querySelector('#home button')?.addEventListener('click', () => {
-            const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = 'wedding-invitation.ics';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(link.href);
+            // iOS Safari's "Add to Calendar" sheet only appears for a direct,
+            // undownloaded navigation to a text/calendar URI - a Blob URL
+            // behind an <a download> either gets ignored or opens the raw
+            // text instead of handing off to Calendar. A data: URI navigated
+            // to directly works the same way on desktop too: text/calendar
+            // isn't renderable, so the browser downloads or opens it exactly
+            // as before.
+            window.location.href = `data:text/calendar;charset=utf-8,${encodeURIComponent(ics)}`;
         });
     };
 
