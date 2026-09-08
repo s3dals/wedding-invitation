@@ -398,6 +398,7 @@ export const guest = (() => {
         vid.muted = true;
         vid.defaultMuted = true;
         vid.playsInline = true;
+        vid.playbackRate = 0.70;
 
         const play = () => {
             const p = vid.play();
