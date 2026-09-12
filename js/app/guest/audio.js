@@ -39,7 +39,7 @@ export const audio = (() => {
 
         try {
             audioEl = new Audio(await cache('audio').withForceCache().get(url, progress.getAbort()));
-            audioEl.loop = true;
+            audioEl.loop = false;
             audioEl.muted = false;
             audioEl.volume = Number.isFinite(volume) ? Math.min(Math.max(volume, 0), 1) : 1;
             audioEl.autoplay = false;
