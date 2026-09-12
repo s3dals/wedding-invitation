@@ -259,7 +259,25 @@ export const admin = (() => {
         bottom.appendChild(seats);
         bottom.appendChild(actions);
 
-        row.replaceChildren(top, bottom);
+        // Show the personal invitation link inline under the name so the
+        // owner can see it (and open it) instead of only copying it blind.
+        const url = guestLink(guest.token);
+        const linkRow = document.createElement('div');
+        linkRow.className = 'mt-1';
+
+        const link = document.createElement('a');
+        link.className = 'd-block text-truncate';
+        link.style.fontSize = '0.72rem';
+        link.style.opacity = '0.7';
+        link.style.textDecoration = 'none';
+        link.href = url;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        link.title = url;
+        link.textContent = url;
+        linkRow.appendChild(link);
+
+        row.replaceChildren(top, linkRow, bottom);
         return row;
     };
 
