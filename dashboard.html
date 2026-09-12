@@ -362,6 +362,14 @@
                         <!-- Guest List -->
                         <div class="p-3 bg-theme-auto mb-3 rounded-4 shadow">
                             <p class="mx-0 mt-0 mb-3 p-0 fw-bold"><i class="fa-solid fa-list me-2"></i>Guest List</p>
+
+                            <div class="d-flex flex-wrap gap-2 mb-3" id="guestFilter">
+                                <button type="button" class="btn btn-sm btn-primary rounded-4 shadow-sm" data-filter="all" onclick="undangan.admin.setGuestFilter('all', this)" data-offline-disabled="false">All</button>
+                                <button type="button" class="btn btn-sm btn-outline-auto rounded-4 shadow-sm" data-filter="attending" onclick="undangan.admin.setGuestFilter('attending', this)" data-offline-disabled="false">Coming</button>
+                                <button type="button" class="btn btn-sm btn-outline-auto rounded-4 shadow-sm" data-filter="declined" onclick="undangan.admin.setGuestFilter('declined', this)" data-offline-disabled="false">Declined</button>
+                                <button type="button" class="btn btn-sm btn-outline-auto rounded-4 shadow-sm" data-filter="pending" onclick="undangan.admin.setGuestFilter('pending', this)" data-offline-disabled="false">No reply</button>
+                            </div>
+
                             <div id="guestList"></div>
                         </div>
                     </section>

@@ -15,6 +15,11 @@ import { pool, request, HTTP_GET, HTTP_PATCH, HTTP_PUT, HTTP_POST, HTTP_DELETE, 
 
 export const admin = (() => {
 
+    // Guest-list filter state. Guests are cached after fetch so switching
+    // the filter re-renders instantly without another request.
+    let guestFilter = 'all';
+    let guestCache = [];
+
     /**
      * Personal invitation link for a guest token, derived from the dashboard URL.
      *
@@ -282,27 +287,62 @@ export const admin = (() => {
     };
 
     /**
+     * @param {function} refresh
      * @returns {void}
      */
+    const renderGuestList = (refresh) => {
+        const list = document.getElementById('guestList');
+        list.replaceChildren();
+
+        const filtered = guestCache.filter((guest) => guestFilter === 'all' || guest.status === guestFilter);
+
+        if (filtered.length === 0) {
+            const empty = document.createElement('p');
+            empty.className = 'm-0 small';
+            empty.style.opacity = '0.75';
+            empty.textContent = 'No guests in this view.';
+            list.appendChild(empty);
+            return;
+        }
+
+        filtered.forEach((guest) => {
+            const row = document.createElement('div');
+            row.className = 'border rounded-4 p-2 mb-2';
+
+            list.appendChild(renderGuestRow(guest, row, {
+                onDelete: (id, target) => deleteGuest(id, target, refresh),
+                // A saved edit can clamp guest_count down to the new seat
+                // count, so the summary is refetched rather than patched.
+                onSaved: refresh,
+            }));
+        });
+    };
+
     const loadGuestList = () => {
         request(HTTP_GET, '/api/guest').token(session.getToken()).send().then((res) => {
-            const list = document.getElementById('guestList');
-            list.replaceChildren();
-
-            res.data.forEach((guest) => {
-                const row = document.createElement('div');
-                row.className = 'border rounded-4 p-2 mb-2';
-
-                list.appendChild(renderGuestRow(guest, row, {
-                    onDelete: (id, target) => deleteGuest(id, target, loadGuestList),
-                    // A saved edit can clamp guest_count down to the new seat
-                    // count, so the summary is refetched rather than patched.
-                    onSaved: loadGuestList,
-                }));
-            });
-
+            guestCache = res.data;
+            renderGuestList(loadGuestList);
             renderGuestSummary(res.data);
         });
+    };
+
+    /**
+     * Filters the guest list by RSVP status and re-renders from the cache.
+     *
+     * @param {string} filter 'all' | 'attending' | 'declined' | 'pending'
+     * @param {HTMLElement} button
+     * @returns {void}
+     */
+    const setGuestFilter = (filter, button) => {
+        guestFilter = filter;
+
+        document.querySelectorAll('#guestFilter button').forEach((b) => {
+            const active = b === button;
+            b.classList.toggle('btn-primary', active);
+            b.classList.toggle('btn-outline-auto', !active);
+        });
+
+        renderGuestList(loadGuestList);
     };
 
     /**
@@ -1299,6 +1339,7 @@ export const admin = (() => {
                 changeRsvpDeadline,
                 saveContent,
                 addGuest,
+                setGuestFilter,
                 enableButtonName,
                 enableButtonPassword,
                 openLists,
