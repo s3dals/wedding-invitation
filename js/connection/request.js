@@ -156,6 +156,7 @@ export const request = (method, path) => {
     let reqAttempts = 0;
     let reqNoBody = false;
     let reqForceCache = false;
+    let reqSilent = false;
 
     /**
      * @type {string|null}
@@ -363,7 +364,10 @@ export const request = (method, path) => {
                     err = new Error('🟥 Could not reach the server. It may have timed out, or you may be offline.');
                 }
 
-                alert(err.message ?? String(err));
+                if (!reqSilent) {
+                    alert(err.message ?? String(err));
+                }
+
                 throw err;
             });
         },
@@ -404,6 +408,17 @@ export const request = (method, path) => {
         withRetry(maxRetries = 3, delay = 1000) {
             reqRetry = maxRetries;
             reqDelay = delay;
+
+            return this;
+        },
+        /**
+         * Suppresses the alert() that send() raises on error, so callers can
+         * handle the failure themselves (e.g. retry or reload) instead.
+         *
+         * @returns {ReturnType<typeof request>}
+         */
+        withSilent() {
+            reqSilent = true;
 
             return this;
         },

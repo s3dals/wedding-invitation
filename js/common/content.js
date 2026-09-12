@@ -173,14 +173,30 @@ export const content = (() => {
      */
     const load = () => request(HTTP_GET, '/api/v2/content')
         .token(session.getToken())
+        .withRetry(2, 1000)
+        .withSilent()
         .send()
         .then((res) => {
             texts = res.data && typeof res.data === 'object' ? res.data : {};
+            // A successful load resets the reload guard set in the catch.
+            window.sessionStorage.removeItem('contentReloadCount');
         })
         .catch(() => {
-            // Falling back to whatever the template already says is better than
-            // rendering an invitation with holes in it.
-            texts = {};
+            // The stored content is the source of truth for every name and line
+            // of wording. Falling back to the template's hardcoded text would
+            // show the wrong names, so reload the page to try again instead.
+            const reloads = parseInt(window.sessionStorage.getItem('contentReloadCount') ?? '0', 10);
+
+            if (reloads >= 3) {
+                // Give up after several reloads so a persistent outage cannot
+                // trap the page in an endless refresh loop.
+                window.sessionStorage.removeItem('contentReloadCount');
+                texts = {};
+                return;
+            }
+
+            window.sessionStorage.setItem('contentReloadCount', String(reloads + 1));
+            window.location.reload();
         });
 
     return {
